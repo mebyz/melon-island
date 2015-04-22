@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+
+<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+<script src='threex.min.js'></script>
+<script src='SimplexNoise.js'></script>
+<script src='threex.terrain.js'></script>
+<body style='margin: 0px; background-color: #bbbbbb; overflow: hidden;'>
+    <script>
+var TILES=40
+var HEIGHTMAPSIZE=16   
+        function addTile(x, y, no) {
+				heightMap = THREEx.Terrain.allocateHeightMap(HEIGHTMAPSIZE, HEIGHTMAPSIZE)
+                THREEx.Terrain.simplexHeightMap(heightMap, (HEIGHTMAPSIZE - 1) * x, (HEIGHTMAPSIZE - 1) * y)
+                p = []
+                p2 = []
+                p3 = []
+                p4 = []
+                pt = []
+                var geometry = THREEx.Terrain.heightMapToPlaneGeometry(heightMap, x, y, p, p2, p3, p4, pt)
+                heightMap = THREEx.Terrain.allocateHeightMap(HEIGHTMAPSIZE, HEIGHTMAPSIZE)
+                THREEx.Terrain.simplexHeightMap(heightMap, (HEIGHTMAPSIZE - 1) * x, (HEIGHTMAPSIZE - 1) * y)
+      
+
+                THREEx.Terrain.heightMapToVertexColor(heightMap, geometry)
+
+                var canvas = THREEx.Terrain.heightMapToCanvas(heightMap)
+
+                canvas.style.position='absolute'
+                canvas.style.top=(y*16)+'px'
+                canvas.style.left=(x*16)+'px'
+                document.body.appendChild(canvas)
+
+
+
+
+        }
+            for (var i = 0; i < TILES; i++) {
+            for (var j = 0; j < TILES; j++) {
+            	addTile(i,j)
+            }
+            }
+    </script>
+</body>

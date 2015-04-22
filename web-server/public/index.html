@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html>
+    
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>
+            chatofpomelo
+        </title>
+        <link rel="stylesheet" href="style.css" type="text/css" />
+        <script src="js/lib/jquery-1.8.0.min.js">
+         		
+        </script>
+        <script src="js/lib/socket.io.js">
+                		
+        </script>
+        <script src="js/lib/pomeloclient.js">
+                		
+        </script>
+        <script src="js/client.js">
+                		
+        </script>
+        <script src="js/pop.js">
+                		
+        </script>
+
+<script type="text/javascript">
+    var precision = 'lowp'
+    var fog;
+    var sky;
+    var particleGroup;
+    var zt=0
+    ld = false;
+    var tcolor = '0.0';
+</script>
+<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+<script src='threex.min.js'></script>
+<script src='FlyControls.js'></script>
+<script src='SimplexNoise.js'></script>
+<script src='threex.GeometryUtils.js'></script>
+<script src='threex.terrain.js'></script>
+<script src='threex.grass.js'></script>
+<script src="dat.js"></script>
+<script src="Mirror.js"></script>
+<script src="Sky.js"></script>
+<script src="WaterShader.js"></script>
+<script src="Particles.js"></script>
+<script src="nature.js"></script>
+<script type="text/javascript" src="OBJLoader.js"></script>
+
+   
+<script id="vertexShader" type="x-shader/x-vertex">
+uniform sampler2D bumpTexture;
+uniform float bumpScale;
+varying float vAmount;
+varying vec2 vUV;
+
+void main() 
+{ 
+    vUV = uv;
+    vec4 bumpData = texture2D( bumpTexture, uv );   
+    vAmount = bumpData.r*0.7+0.1;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+}
+</script>
+
+<script id="fragmentShader" type="x-shader/x-vertex"> 
+uniform sampler2D oceanTexture;
+uniform sampler2D sandyTexture;
+uniform sampler2D grassTexture;
+uniform sampler2D rockyTexture;
+uniform sampler2D snowyTexture;
+varying vec2 vUV;
+varying float vAmount;
+varying float tcolor;
+#ifdef USE_FOG
+
+    uniform vec3 fogColor;
+
+    #ifdef FOG_EXP2
+
+        uniform float fogDensity;
+
+    #else
+
+        uniform float fogNear;
+        uniform float fogFar;
+    #endif
+
+#endif
+
+void main() 
+{
+    vec3 outgoingLight = vec3( 1.0 );
+    vec4 water = (smoothstep(0.0, 0.1, vAmount) - smoothstep(0.04, 0.16, vAmount)) * texture2D( oceanTexture, vUV * 100.0 );
+    vec4 sandy = (smoothstep(0.04, 0.16, vAmount) - smoothstep(0.18, 0.32, vAmount)) * texture2D( sandyTexture, vUV * 10.0 );
+    vec4 grass = (smoothstep(0.18, 0.32, vAmount) - smoothstep(0.65, 0.75, vAmount)) * texture2D( grassTexture, vUV * 20.0 );
+    vec4 rocky = (smoothstep(0.65, 0.75, vAmount) - smoothstep(0.78, 0.82, vAmount)) * texture2D( rockyTexture, vUV * 20.0 );
+    vec4 snowy = (smoothstep(0.78, 0.82, vAmount) - smoothstep(0.85, 0.90, vAmount))                                   * texture2D( snowyTexture, vUV * 10.0 );
+
+    vec4 snowy2 = ( smoothstep(0.85, 0.90, vAmount))                                   * texture2D( snowyTexture, vUV * 20.0 );
+    float tcolor = 0.5;
+    
+#ifdef USE_FOG
+
+    #ifdef USE_LOGDEPTHBUF_EXT
+
+        float depth = gl_FragDepthEXT / gl_FragCoord.w;
+
+    #else
+
+        float depth = gl_FragCoord.z / gl_FragCoord.w;
+
+    #endif
+
+    #ifdef FOG_EXP2
+
+        float fogFactor = exp2( - square( fogDensity ) * square( depth ) * LOG2 );
+        fogFactor = whiteCompliment( fogFactor );
+
+    #else
+
+        float fogFactor = smoothstep( fogNear, fogFar, depth );
+
+    #endif
+    
+    outgoingLight = mix( outgoingLight, fogColor, fogFactor );
+gl_FragColor = vec4(tcolor, tcolor, tcolor, 1.0) *(water + sandy + grass + rocky + snowy + snowy2) * outgoingLight.x; //, 1.0);
+
+#endif
+}  
+</script>
+ </head>
+    
+    <body>
+    <div class="container">
+  <div id="cloud-intro" class="wind">
+      
+        <div id="app">
+            <div id="loginView">
+                <div id="loginTitle">
+                    Kumbava Island
+                </div>
+                <table>
+                    <tr>
+                        <td>
+                            <input id="loginUser" type="text" placeholder="enter your name" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input name="channels" type="hidden" id="channelList" value="main"
+                            />
+                        </td>
+                        <tr>
+                            <td>
+                                <input id="login" type='button' value="join" />
+                            </td>
+                        </tr>
+                </table>
+                <div id="loginError">
+                </div>
+
+                <span style="position:absolute;bottom:0px;left:0px;width:100%;"><center>&lt;/&gt; with &#10084; by emmanuel.botros@gmail.com</center></span>
+            </div>
+            <div id="chatHistory" style="position:absolute;">
+
+            </div>
+<div id="3d" style="width:100%;height:100%;"></div>
+
+                  <div id="blocker"></div>
+    <div id="instructions"></div>
+             <script>
+        var HEIGHTMAPSIZE = 16
+        var MAXTILES = 40
+
+        var MAP = new Array(MAXTILES);
+        for (var i = 0; i < MAXTILES; i++) {
+            MAP[i] = new Array(MAXTILES);
+        }
+
+        var MAPMESHES = new Array(MAXTILES);
+        for (var i = 0; i < MAXTILES; i++) {
+            MAPMESHES[i] = new Array(MAXTILES);
+        }
+        var MAPU = new Array(MAXTILES);
+        for (var i = 0; i < MAXTILES; i++) {
+            MAPU[i] = new Array(MAXTILES);
+        }
+
+        var MAPGRASS = new Array(MAXTILES);
+        for (var i = 0; i < MAXTILES; i++) {
+            MAPGRASS[i] = new Array(MAXTILES);
+        }
+        var MAPGRASS2 = new Array(MAXTILES);
+        for (var i = 0; i < MAXTILES; i++) {
+            MAPGRASS2[i] = new Array(MAXTILES);
+        }
+        var MAPGRASS3 = new Array(MAXTILES);
+        for (var i = 0; i < MAXTILES; i++) {
+            MAPGRASS3[i] = new Array(MAXTILES);
+        }
+        var MAPGRASS4 = new Array(MAXTILES);
+        for (var i = 0; i < MAXTILES; i++) {
+            MAPGRASS4[i] = new Array(MAXTILES);
+        }
+        var MAPTREES = new Array(MAXTILES);
+        for (var i = 0; i < MAXTILES; i++) {
+            MAPTREES[i] = new Array(MAXTILES);
+        }
+
+        var okok = true;
+
+        function initSky() {
+            sky = new THREE.Sky();
+            scene.add(sky.mesh);
+            sunSphere = new THREE.Mesh(new THREE.SphereGeometry(20000, 30, 30),
+                new THREE.MeshBasicMaterial({
+                    color: 0xffffff,
+                    wireframe: false
+                }));
+            sunSphere.position.y = -700000;
+            sunSphere.visible = true;
+            scene.add(sunSphere);
+
+            var effectController = {
+                turbidity: 10,
+                reileigh: 2,
+                mieCoefficient: 0.005,
+                mieDirectionalG: 0.8,
+                luminance: 1,
+                inclination: 0.49, // elevation / inclination
+                azimuth: 0.25, // Facing front,
+                sun: !true
+            }
+
+            function guiChanged() {
+                var uniforms = sky.uniforms;
+                uniforms.turbidity.value = effectController.turbidity;
+                uniforms.reileigh.value = effectController.reileigh;
+                uniforms.luminance.value = effectController.luminance;
+                uniforms.mieCoefficient.value = effectController.mieCoefficient;
+                uniforms.mieDirectionalG.value = effectController.mieDirectionalG;
+
+                var theta = Math.PI * (effectController.inclination - 0.5);
+
+                scene.fog.color.r = 0.5 - effectController.inclination * 2
+                scene.fog.color.g = 0.5 - effectController.inclination * 2
+                scene.fog.color.b = 0.5 - effectController.inclination * 2
+
+                var phi = 2 * Math.PI * (effectController.azimuth - 0.5);
+
+                sunSphere.position.x = distance * Math.cos(phi);
+                sunSphere.position.y = distance * Math.sin(phi) * Math.sin(theta);
+                sunSphere.position.z = distance * Math.sin(phi) * Math.cos(theta);
+
+                sunSphere.visible = effectController.sun;
+
+                sky.uniforms.sunPosition.value.copy(sunSphere.position);
+
+            }
+
+            var gui = new dat.GUI();
+            gui.add(effectController, "turbidity", 1.0, 20.0, 0.1).onChange(guiChanged);
+            gui.add(effectController, "reileigh", 0.0, 4, 0.001).onChange(guiChanged);
+            gui.add(effectController, "mieCoefficient", 0.0, 0.1, 0.001).onChange(guiChanged);
+            gui.add(effectController, "mieDirectionalG", 0.0, 1, 0.001).onChange(guiChanged);
+            gui.add(effectController, "luminance", 0.0, 2).onChange(guiChanged);;
+            gui.add(effectController, "inclination", 0, 1, 0.0001).onChange(guiChanged);
+            gui.add(effectController, "azimuth", 0, 1, 0.0001).onChange(guiChanged);
+            gui.add(effectController, "sun").onChange(guiChanged);
+
+            guiChanged();
+            dat.GUI.toggleHide()
+            camera.lookAt(sunSphere.position)
+
+
+     var texture = loadImage('clouds001.png');
+
+     particleGroup = new ShaderParticleGroup({
+        texture: texture,
+        maxAge: 100
+    });
+
+     emitter = new ShaderParticleEmitter({
+        position: new THREE.Vector3(15000, 600, 15000),
+        positionSpread: new THREE.Vector3(35000, 200, 35000),
+
+        colorStart: new THREE.Color(0x000000),
+        colorSpread: new THREE.Vector3(-1, -1, -1),
+        colorEnd: new THREE.Color(0x000000),
+        size: 100000,
+        sizeSpread: 0,
+        opacityStart: 0,
+        opacityMiddle: 0.5,
+        opacityEnd: 0,
+
+        particlesPerSecond: 10,
+    });
+
+     particleGroup.addEmitter( emitter );
+     scene.add( particleGroup.mesh );
+
+        }
+        var distance = 400000;
+        var nature_models = [];
+        var i = 0;
+
+        for (var index in nature_) {
+            var fobj = '../' + nature_[index].obj;
+            var ftext = '/' + nature_[index].png;
+            loadTree(ftext, fobj, i++);
+        }
+
+        function loadTree(t, o, i) {
+            var manager = new THREE.LoadingManager();
+            manager.onProgress = function(item, loaded, total) {};
+            var texture = new THREE.Texture();
+            var onProgress = function(xhr) {};
+            var onError = function(xhr) {};
+            var loader = new THREE.ImageLoader(manager);
+            loader.load(t, function(image) {
+                texture.image = image;
+                texture.needsUpdate = true;
+            });
+            var loader = new THREE.OBJLoader(manager);
+            loader.load(o, function(object) {
+                object.traverse(function(child) {
+                    if (child instanceof THREE.Mesh) {
+                        child.material.map = texture;
+                        child.material.transparent = true;
+                        child.material.alphaTest = 0.5;
+                        child.material.side = THREE.DoubleSide;
+                    }
+                });
+                //console.log(i+' '+t+' '+object.id)
+                nature_models[i] = object;;
+            }, onProgress, onError);
+        }
+
+        var loadImage = function(url) {
+            return THREE.ImageUtils.loadTexture(url, null, function() {});
+        }
+
+
+        var oceanTexture = new loadImage('dirt-512.jpg');
+        oceanTexture.wrapS = oceanTexture.wrapT = THREE.RepeatWrapping;
+
+        var sandyTexture = new loadImage('sand-512.jpg');
+        sandyTexture.wrapS = sandyTexture.wrapT = THREE.RepeatWrapping;
+
+        var grassTexture = new loadImage('grass-512.jpg');
+        grassTexture.wrapS = grassTexture.wrapT = THREE.RepeatWrapping;
+
+        var rockyTexture = new loadImage('rock-512.jpg');
+        rockyTexture.wrapS = rockyTexture.wrapT = THREE.RepeatWrapping;
+
+        var snowyTexture = new loadImage('snow-512.jpg');
+        snowyTexture.wrapS = snowyTexture.wrapT = THREE.RepeatWrapping;
+
+
+        var TILES = 2
+
+        var moveForward = false;
+        var moveBackward = false;
+        var moveLeft = false;
+        var moveRight = false;
+        var gmesh, water, hemiLight, light;
+        var posgrass = [];
+        var posgrass2 = [];
+        var posgrass3 = [];
+        var posgrass4 = [];
+        var postrees = [];
+        var controls;
+        var controlsEnabled = false;
+        var renderer = new THREE.WebGLRenderer({
+            'precision': precision
+        });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('3d').appendChild(renderer.domElement);
+        var velocity = new THREE.Vector3();
+        var onRenderFcts = [];
+        var scene = new THREE.Scene();
+        //scene.fog = new THREE.Fog(0x111111, 100, 1600);
+        //    scene.fog.color.setHSL( 0.1, 0.1, 0.1 );
+
+        scene.fog = new THREE.Fog(0x000000, 100, 3000);
+
+        var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 1000000);
+        controls = new THREE.PointerLockControls(camera);
+        controls.getObject().position.x = 15000
+        controls.getObject().position.z = 15000
+        scene.add(controls.getObject());
+        var blocker = document.getElementById('blocker');
+        var instructions = document.getElementById('instructions');
+        if (document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element) {
+
+            controlsEnabled = true;
+            controls.enabled = true;
+            blocker.style.display = 'none';
+
+        } else {
+
+            controls.enabled = false;
+            blocker.style.display = '-webkit-box';
+            blocker.style.display = '-moz-box';
+            blocker.style.display = 'box';
+            instructions.style.display = '';
+        }
+
+        var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
+        if (havePointerLock) {
+
+            var element = document.body;
+
+            var pointerlockchange = function(event) {
+
+                if (document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element) {
+
+                    controlsEnabled = true;
+                    controls.enabled = true;
+
+                    blocker.style.display = 'none';
+
+                } else {
+
+                    controls.enabled = false;
+
+                    blocker.style.display = '-webkit-box';
+                    blocker.style.display = '-moz-box';
+                    blocker.style.display = 'box';
+
+                    instructions.style.display = '';
+
+                }
+
+            }
+
+            var pointerlockerror = function(event) {
+
+                instructions.style.display = '';
+
+            }
+
+            // Hook pointer lock state change events
+            document.addEventListener('pointerlockchange', pointerlockchange, false);
+            document.addEventListener('mozpointerlockchange', pointerlockchange, false);
+            document.addEventListener('webkitpointerlockchange', pointerlockchange, false);
+
+            document.addEventListener('pointerlockerror', pointerlockerror, false);
+            document.addEventListener('mozpointerlockerror', pointerlockerror, false);
+            document.addEventListener('webkitpointerlockerror', pointerlockerror, false);
+
+            instructions.addEventListener('click', function(event) {
+
+                instructions.style.display = 'none';
+
+                // Ask the browser to lock the pointer
+                element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;
+
+                if (/Firefox/i.test(navigator.userAgent)) {
+
+                    var fullscreenchange = function(event) {
+
+                        if (document.fullscreenElement === element || document.mozFullscreenElement === element || document.mozFullScreenElement === element) {
+
+                            document.removeEventListener('fullscreenchange', fullscreenchange);
+                            document.removeEventListener('mozfullscreenchange', fullscreenchange);
+
+                            element.requestPointerLock();
+                        }
+
+                    }
+
+                    document.addEventListener('fullscreenchange', fullscreenchange, false);
+                    document.addEventListener('mozfullscreenchange', fullscreenchange, false);
+
+                    element.requestFullscreen = element.requestFullscreen || element.mozRequestFullscreen || element.mozRequestFullScreen || element.webkitRequestFullscreen;
+
+                    element.requestFullscreen();
+
+                } else {
+
+                    element.requestPointerLock();
+
+                }
+
+            }, false);
+
+        } else {
+
+            instructions.innerHTML = 'Your browser doesn\'t seem to support Pointer Lock API';
+
+        }
+
+
+        var onKeyDown = function(event) {
+
+            switch (event.keyCode) {
+
+                case 38: // up
+                case 87: // w
+                    moveForward = true;
+                    break;
+
+                case 37: // left
+                case 65: // a
+                    moveLeft = true;
+                    break;
+
+                case 40: // down
+                case 83: // s
+                    moveBackward = true;
+                    break;
+
+                case 39: // right
+                case 68: // d
+                    moveRight = true;
+                    break;
+
+                case 32: // space
+                    if (canJump === true) velocity.y += 350;
+                    canJump = false;
+                    break;
+
+            }
+
+        };
+
+        var onKeyUp = function(event) {
+
+            switch (event.keyCode) {
+
+                case 38: // up
+                case 87: // w
+                    moveForward = false;
+                    break;
+
+                case 37: // left
+                case 65: // a
+                    moveLeft = false;
+                    break;
+
+                case 40: // down
+                case 83: // s
+                    moveBackward = false;
+                    break;
+
+                case 39: // right
+                case 68: // d
+                    moveRight = false;
+                    break;
+
+            }
+
+        };
+
+        document.addEventListener('keydown', onKeyDown, false);
+        document.addEventListener('keyup', onKeyUp, false);
+
+        //              controls.addEventListener( 'change', render );
+
+        //              camera.lookAt( new THREE.Vector3(0,0,0))
+        ;
+        (function() {
+            /*      var light   = new THREE.AmbientLight( 0x666666)
+                scene.add( light )
+                var light   = new THREE.DirectionalLight('0xccddee', 2)
+                light.position.set(0.5, 0.0, 2)
+                scene.add( light )
+                var light   = new THREE.DirectionalLight('white', 5)
+                light.position.set(0.5, 0.0, 2)
+                scene.add( light )
+                */
+            light = new THREE.DirectionalLight('white', 0.75 * 2)
+            light.position.set(-0.5, -0.5, -2)
+            scene.add(light)
+            hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, .5);
+            scene.add(hemiLight)
+
+        })()
+
+        var cube
+        var heightMap, mesh, geometry, material;
+        setTimeout(function() {
+                ld = true
+            }, 5000)
+            /*setTimeout(function(){
+            for (var i = 0; i < TILES; i++) {
+            for (var j = 0; j < TILES; j++) {
+                addTile(i,j)
+            }
+            }
+            },5000)*/
+            //gmesh    = new THREEx.createGrassTufts(posgrass,'images/grass01.png')
+            //scene.add(gmesh)
+            //gmesh    = new THREEx.createGrassTufts(posgrass2,'images/grass02.png')
+            //scene.add(gmesh)
+            //gmesh    = new THREEx.createGrassTufts(posgrass3,'images/flowers01.png')
+            //scene.add(gmesh)
+            //gmesh    = new THREEx.createGrassTufts(posgrass4,'images/flowers02.png')
+            //scene.add(gmesh)
+            /*
+            setTimeout(function(){
+
+            for (var i = 0; i < postrees.length; i++) {
+            var r = Math.round(Math.random()*68)
+            if (nature_models[r]!= undefined){ 
+            var child = nature_models[r].clone();
+            child.name="nature_"+i;
+            child.position.set(postrees[i].x, postrees[i].y , postrees[i].z);
+            scene.add(child);
+            child.updateMatrixWorld(true);
+            }
+            }
+            },5000)
+            */
+        initSky();
+
+        var parameters = {
+            width: 10000,
+            height: 10000,
+            widthSegments: 500,
+            heightSegments: 500,
+            depth: 1500,
+            param: 1,
+            filterparam: 1
+        }
+
+        var waterNormals;
+
+
+
+        waterNormals = new THREE.ImageUtils.loadTexture('images/waternormals.jpg');
+        waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;
+
+        water = new THREE.Water(renderer, camera, scene, {
+            textureWidth: 512,
+            textureHeight: 512,
+            waterNormals: waterNormals,
+            alpha: 1.0,
+            fog: true,
+            sunDirection: light.position.clone().normalize(),
+            sunColor: 0xffffff,
+            waterColor: 0x001e0f,
+            distortionScale: 50.0,
+        });
+
+
+        mirrorMesh = new THREE.Mesh(
+            new THREE.PlaneBufferGeometry(parameters.width, parameters.height),
+            water.material
+        );
+
+        mirrorMesh.add(water);
+        mirrorMesh.rotation.x = -Math.PI * 0.5;
+        mirrorMesh.position.y = -200;
+        mirrorMesh.position.x = 500;
+        mirrorMesh.position.z = 500;
+        mirrorMesh.scale.multiplyScalar(1)
+
+        scene.add(mirrorMesh);
+
+        var worker = new Worker('/worker.js');
+        /*worker.onmessage = function(e) {
+        var data = e.data;
+             x=data.data.x
+          y=data.data.y
+         heightMap  = THREEx.Terrain.allocateHeightMap(HEIGHTMAPSIZE, HEIGHTMAPSIZE)
+            THREEx.Terrain.simplexHeightMap(heightMap,(HEIGHTMAPSIZE-1)*x,(HEIGHTMAPSIZE-1)*y)
+            p =[]
+            p2 =[]
+            p3 =[]
+            p4 =[]
+             geometry   = THREEx.Terrain.heightMapToPlaneGeometry(heightMap,x,y,p,p2,p3,p4)
+            gp    = new THREEx.createGrassTufts(p,'images/grass01.png')
+            scene.add(gp)
+        MAPGRASS[x][y]=gp
+        gp    = new THREEx.createGrassTufts(p2,'images/grass02.png')
+        scene.add(gp)
+        MAPGRASS2[x][y]=gp
+        gp    = new THREEx.createGrassTufts(p3,'images/flowers01.png')
+        scene.add(gp)
+        MAPGRASS3[x][y]=gp
+        gp    = new THREEx.createGrassTufts(p4,'images/flowers02.png')
+        scene.add(gp)
+        MAPGRASS4[x][y]=gp
+
+
+            THREEx.Terrain.heightMapToVertexColor(heightMap, geometry)
+
+            var canvas  = THREEx.Terrain.heightMapToCanvas(heightMap)
+
+            document.body.appendChild(canvas)
+
+
+        var texture = new THREE.Texture(canvas);
+        texture.needsUpdate = true;
+
+            var customUniforms = {
+                bumpTexture:    { type: "t", value: texture },
+                tcolor:         { type: "f", value: tcolor },
+                bumpScale:      { type: "f", value: 1.0 },
+                oceanTexture:   { type: "t", value: oceanTexture },
+                sandyTexture:   { type: "t", value: sandyTexture },
+                grassTexture:   { type: "t", value: grassTexture },
+                rockyTexture:   { type: "t", value: rockyTexture },
+                snowyTexture:   { type: "t", value: snowyTexture },
+            };
+            
+            var material = new THREE.ShaderMaterial( 
+            {
+                uniforms: customUniforms,
+                vertexShader:   document.getElementById( 'vertexShader'   ).textContent,
+                fragmentShader: document.getElementById( 'fragmentShader' ).textContent,
+            }   );
+             mesh   = new THREE.Mesh( geometry, material );
+             MAPU[x][y]=material 
+            scene.add( mesh );
+            mesh.position.x = 1000*x+500
+            mesh.position.z = 1000*y+500
+            mesh.scale.z    = 0.01
+
+            mesh.rotateX(-Math.PI/2)
+            mesh.scale.multiplyScalar(1000) 
+        MAP[x][y]=heightMap;
+        MAPMESHES[x][y]=mesh;
+        geometry.dispose();
+        material.dispose();
+        texture.dispose();
+        }
+        //worker.postMessage({
+        //  some_data: 'foo',
+        //});
+        */
+
+        function addTile(x, y, no) {
+
+            if (no != true) {
+
+                heightMap = THREEx.Terrain.allocateHeightMap(HEIGHTMAPSIZE, HEIGHTMAPSIZE)
+                THREEx.Terrain.simplexHeightMap(heightMap, (HEIGHTMAPSIZE - 1) * x, (HEIGHTMAPSIZE - 1) * y)
+                p = []
+                p2 = []
+                p3 = []
+                p4 = []
+                pt = []
+                geometry = THREEx.Terrain.heightMapToPlaneGeometry(heightMap, x, y, p, p2, p3, p4, pt)
+                gp = new THREEx.createGrassTufts(p, 'images/grass01.png')
+                scene.add(gp)
+                MAPGRASS[x][y] = gp
+                gp = new THREEx.createGrassTufts(p2, 'images/grass02.png')
+                scene.add(gp)
+                MAPGRASS2[x][y] = gp
+                gp = new THREEx.createGrassTufts(p3, 'images/flowers01.png')
+                scene.add(gp)
+                MAPGRASS3[x][y] = gp
+                gp = new THREEx.createGrassTufts(p4, 'images/flowers02.png')
+                scene.add(gp)
+                MAPGRASS4[x][y] = gp
+
+                MAPTREES[x][y] = [];
+
+                for (var i = 0; i < pt.length; i++) {
+                    var r = i * x * y % 68; //Math.round(Math.random()*68)
+                    if (nature_models[r] != undefined) {
+                        var child = nature_models[r].clone();
+                        child.name = "nature_" + i;
+                        child.position.set(pt[i].x, pt[i].y, pt[i].z);
+                        scene.add(child);
+                        child.updateMatrixWorld(true);
+                        MAPTREES[x][y].push(child);
+                    }
+                }
+
+
+                THREEx.Terrain.heightMapToVertexColor(heightMap, geometry)
+
+                var canvas = THREEx.Terrain.heightMapToCanvas(heightMap)
+
+                document.body.appendChild(canvas)
+
+
+                var texture = new THREE.Texture(canvas);
+                texture.needsUpdate = true;
+
+                var customUniforms = {
+                    fogDensity: {
+                        type: "f",
+                        value: 0.00025
+                    },
+                    fogColor: {
+                        type: "c",
+                        value: scene.fog.color
+                    },
+                    fogNear: {
+                        type: "f",
+                        value: scene.fog.near
+                    },
+                    fogFar: {
+                        type: "f",
+                        value: scene.fog.far
+                    },
+                    bumpTexture: {
+                        type: "t",
+                        value: texture
+                    },
+                    bumpScale: {
+                        type: "f",
+                        value: 1.0
+                    },
+                    tcolor: {
+                        type: "f",
+                        value: tcolor
+                    },
+                    oceanTexture: {
+                        type: "t",
+                        value: oceanTexture
+                    },
+                    sandyTexture: {
+                        type: "t",
+                        value: sandyTexture
+                    },
+                    grassTexture: {
+                        type: "t",
+                        value: grassTexture
+                    },
+                    rockyTexture: {
+                        type: "t",
+                        value: rockyTexture
+                    },
+                    snowyTexture: {
+                        type: "t",
+                        value: snowyTexture
+                    },
+
+                };
+
+                var material = new THREE.ShaderMaterial({
+                    fog: true,
+                    uniforms: customUniforms,
+                    vertexShader: document.getElementById('vertexShader').textContent,
+                    fragmentShader: document.getElementById('fragmentShader').textContent,
+                });
+                mesh = new THREE.Mesh(geometry, material);
+                MAPU[x][y] = material
+
+                scene.add(mesh);
+                mesh.position.x = 1000 * x + 500
+                mesh.position.z = 1000 * y + 500
+                mesh.scale.z = 0.01
+
+                mesh.rotateX(-Math.PI / 2)
+                mesh.scale.multiplyScalar(1000)
+                MAP[x][y] = heightMap;
+                MAPMESHES[x][y] = mesh;
+
+            } else {
+
+                //geo = new THREEx.Terrain.PlaneGeometry( 1, 1,63, 63);
+                //heightMap = null//THREEx.Terrain.allocateHeightMap(64, 64)
+                //THREEx.Terrain.simplexHeightMap(heightMap,63*x,63*y)
+
+                worker.postMessage({
+                    x: x,
+                    y: y //,geo:geo,heightMap:heightMap
+                });
+
+                MAP[x][y] = 1;
+                MAPMESHES[x][y] = 1;
+
+            }
+
+        }
+
+
+        onRenderFcts.push(function(delta, now) {
+particleGroup.tick(delta)            
+zt += delta/500
+z=zt
+                var theta = Math.PI * ( z- 0.5);
+                
+                scene.fog.color.r = 0.5 - z * 2
+                scene.fog.color.g = 0.5 - z * 2
+                scene.fog.color.b = 0.5 - z * 2
+
+                var phi = 2 * Math.PI * (0.25 - 0.5);
+
+                sunSphere.position.x = distance * Math.cos(phi);
+                sunSphere.position.y = distance * Math.sin(phi) * Math.sin(theta);
+                sunSphere.position.z = distance * Math.sin(phi) * Math.cos(theta);
+
+                sky.uniforms.sunPosition.value.copy(sunSphere.position);
+            //      camera.position.x += (mouse.x*500000 - camera.position.x) 
+            //      camera.position.z+= (mouse.y*500000 - (camera.position.z))
+
+            //controls.movementSpeed = 0.33 ;
+            //              controls.update();
+
+            if (controlsEnabled) {
+                //raycaster.ray.origin.copy( controls.getObject().position );
+                //raycaster.ray.origin.y -= 10;
+
+                //var intersections = raycaster.intersectObjects( objects );
+
+                //var isOnObject = intersections.length > 0;
+
+                //var time = performance.now();
+                //var delta = ( time - prevTime ) / 1000;
+
+                velocity.x -= velocity.x * 10.0 * delta;
+                velocity.z -= velocity.z * 10.0 * delta;
+
+                velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
+
+                if (moveForward) velocity.z -= 40.0 * delta * 100;
+                if (moveBackward) velocity.z += 40.0 * delta * 100;
+
+                if (moveLeft) velocity.x -= 40.0 * delta * 100;
+                if (moveRight) velocity.x += 40.0 * delta * 100;
+
+                controls.getObject().translateX(velocity.x * delta);
+                //controls.getObject().translateY( velocity.y * delta );
+                controls.getObject().translateZ(velocity.z * delta);
+                /*
+                                    if ( controls.getObject().position.y < 10 ) {
+
+                                        velocity.y = 0;
+                                        controls.getObject().position.y = 10;
+
+                                        canJump = true;
+
+                                    }
+                */
+                //prevTime = time;
+
+            }
+            //console.log(camera.position)
+            //if (camera.position.x==NaN)camera.position=new Vector3(0,0,0)
+            cx = controls.getObject().position.x % 1000;
+            cz = controls.getObject().position.z % 1000;
+
+
+
+
+            tcx = Math.floor(controls.getObject().position.x / 1000);
+            tcz = Math.floor(controls.getObject().position.z / 1000);
+
+
+
+
+            var notremove = true
+            var nearbytiles = [];
+            preload = 1;
+
+
+            if (ld == true) {
+
+
+                for (var i = tcx - TILES / 2 - preload; i <= tcx + TILES / 2 + preload; i++) {
+                    for (var j = tcz - TILES / 2 - preload; j <= tcz + TILES / 2 + preload; j++) {
+
+                        if (i >= 0 && j >= 0)
+                            nearbytiles.push(i + '_' + j);
+                    }
+                }
+                //console.log(nearbytiles);
+                for (var i = 0; i < MAXTILES; i++) {
+                    for (var j = 0; j < MAXTILES; j++) {
+
+                        if (nearbytiles.indexOf(i + '_' + j) < 0 && MAP[i][j] != undefined) {
+
+                            if (notremove != false) {
+                                MAPMESHES[i][j].visible = false
+                                MAPGRASS[i][j].visible = false
+                                MAPGRASS2[i][j].visible = false
+                                MAPGRASS3[i][j].visible = false
+                                MAPGRASS4[i][j].visible = false
+                                for (var k = 0; k < MAPTREES[i][j].length; k++) {
+                                    MAPTREES[i][j][k].visible = false
+                                }
+
+                            } else {
+                                //              console.log('NEED TO DESTROY : '+i+'_'+j)
+                                scene.remove(MAPMESHES[i][j]);
+                                scene.remove(MAPGRASS[i][j])
+                                scene.remove(MAPGRASS2[i][j])
+                                scene.remove(MAPGRASS3[i][j])
+                                scene.remove(MAPGRASS4[i][j])
+
+                                for (var k = 0; k < MAPTREES[i][j].length; k++) {
+                                    scene.remove(MAPTREES[i][j][k])
+                                    MAPTREES[i][j][k] = null
+                                }
+
+                                MAPMESHES[i][j].geometry.dispose();
+                                MAPMESHES[i][j].material.dispose();
+                                MAPMESHES[i][j] = null
+                                MAP[i][j] = null;
+
+
+                            }
+                        }
+
+                        if (nearbytiles.indexOf(i + '_' + j) > -1 && MAP[i][j] != undefined) {
+
+                            if (notremove != false) {
+                                MAPMESHES[i][j].visible = true
+                                MAPGRASS[i][j].visible = true
+                                MAPGRASS2[i][j].visible = true
+                                MAPGRASS3[i][j].visible = true
+                                MAPGRASS4[i][j].visible = true
+                                for (var k = 0; k < MAPTREES[i][j].length; k++) {
+                                    MAPTREES[i][j][k].visible = true
+                                }
+                            }
+                        }
+
+                        if (nearbytiles.indexOf(i + '_' + j) > -1 && MAP[i][j] == undefined) {
+                            //              console.log('NEED TO CREATE :'+i+'_'+j)
+                            console.log('addtile : ' + i + '' + j)
+                            addTile(i, j)
+                        }
+
+                    }
+                }
+
+
+            }
+
+
+            //console.log(tcx+tcz)
+            if (controls.getObject().position.x < 1 + 1 || controls.getObject().position.z < 1 + 1
+                //          ||
+                //          controls.getObject().position.x>1000*TILES-1 || controls.getObject().position.z >1000*TILES-1
+            )
+                controls.getObject().position.y = -150
+            else {
+
+                //      controls.getObject().position.y=THREEx.Terrain.planeToHeightMapCoords(heightMaps[tcx+tcz], meshes[tcx+tcz], cx/2, cz/2)+400
+
+
+                if (ld == true) controls.getObject().position.y = THREEx.Terrain.planeToHeightMapCoords(MAP[tcx][tcz], MAPMESHES[tcx][tcz], cx, cz) + 20
+                if (controls.getObject().position.y < -150) controls.getObject().position.y = -150
+            }
+
+            //              mirrorMesh.position.y = - 1600;
+            mirrorMesh.position.x = controls.getObject().position.x;
+            mirrorMesh.position.z = controls.getObject().position.z;
+            $('#pos').html(Math.round(controls.getObject().position.x) + ' ' + Math.round(controls.getObject().position.y) + ' ' + Math.round(controls.getObject().position.z))
+
+
+
+
+            //camera.lookAt( new THREE.Vector3(100000,-2000,100000))
+            //gmesh.rotation.y+=.1;
+
+
+            //              controls.movementSpeed = 1;
+            //              controls.update( delta );
+        })
+
+        onRenderFcts.push(function() {
+            water.material.uniforms.time.value += 1.0 / 60.0;
+
+            water.render();
+            renderer.render(scene, camera);
+        })
+        var lastTimeMsec = null
+        requestAnimationFrame(function animate(nowMsec) {
+            if (okok == true) {
+                requestAnimationFrame(animate);
+                lastTimeMsec = lastTimeMsec || nowMsec - 1000 / 60
+                var deltaMsec = Math.min(200, nowMsec - lastTimeMsec)
+                lastTimeMsec = nowMsec
+                onRenderFcts.forEach(function(onRenderFct) {
+                    onRenderFct(deltaMsec / 1000, nowMsec / 1000)
+                })
+            }
+        })
+    </script>
+            <div id="toolbar">
+                <ul id="status" style="display:none;">
+                    <li>
+                        users:
+                        <select name="users" id="usersList">
+                            <option value="*">
+                                all
+                            </option>
+                        </select>
+                    </li>
+                    <li>
+                        name:
+                        <span id="name">
+                        </span>
+                    </li>
+                    <li>
+                        room:
+                        <span id="room">
+                        </span>
+                    </li>
+                </ul>
+                <input tabindex="1" type="text" id="entry" />
+            </div>
+        </div>
+        <div id="pop">
+            <div id="popHead">
+                <a id="popClose" title="close">Close</a>
+                <h2>
+                    Tip
+                </h2>
+            </div>
+            <div id="popContent">
+                <dl>
+                    <dd id="popIntro">
+                    </dd>
+                </dl>
+                <p id="popMore">
+                    No Tip Again
+                </p>
+            </div>
+        </div>
+  </div>
+</div>
+          
+    </body>
+
+</html>
