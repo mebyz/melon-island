@@ -24,9 +24,15 @@
         </script>
 
 <script type="text/javascript">
+var rY=0;
     var precision = 'lowp'
+    var running = false;
     var fog;
+    var blendMesh;
     var sky;
+    var isFrameStepping;
+    var clock;
+    var gui;
     var particleGroup;
     var zt=0
     ld = false;
@@ -34,7 +40,9 @@
 </script>
 <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
 <script src='threex.min.js'></script>
-<script src='FlyControls.js'></script>
+<!--<script src='FlyControls.js'></script>-->
+<script src='THREE.TargetCamera.js'></script>
+
 <script src='SimplexNoise.js'></script>
 <script src='threex.GeometryUtils.js'></script>
 <script src='threex.terrain.js'></script>
@@ -45,6 +53,9 @@
 <script src="WaterShader.js"></script>
 <script src="Particles.js"></script>
 <script src="nature.js"></script>
+
+<script src="BlendCharacter.js"></script>
+<script src="BlendCharacterGui.js"></script>
 <script type="text/javascript" src="OBJLoader.js"></script>
 
    
@@ -166,6 +177,8 @@ gl_FragColor = vec4(tcolor, tcolor, tcolor, 1.0) *(water + sandy + grass + rocky
 
             </div>
 <div id="3d" style="width:100%;height:100%;"></div>
+    <div id="pos" style="position:absolute;top:0px;left:0px;color:white;">test</div>
+    <div id="pos2" style="position:absolute;top:20px;left:0px;color:white;">test</div>
 
                   <div id="blocker"></div>
     <div id="instructions"></div>
@@ -209,6 +222,156 @@ gl_FragColor = vec4(tcolor, tcolor, tcolor, 1.0) *(water + sandy + grass + rocky
         }
 
         var okok = true;
+
+
+
+
+            function onStartAnimation( event ) {
+
+                var data = event.detail;
+
+                blendMesh.stopAll();
+
+                // the blend mesh will combine 1 or more animations
+                for ( var i = 0; i < data.anims.length; ++i ) {
+
+                    blendMesh.play(data.anims[i], data.weights[i]);
+
+                }
+
+                isFrameStepping = false;
+
+            }
+
+            function onStopAnimation( event ) {
+
+                blendMesh.stopAll();
+                isFrameStepping = false;
+
+            }
+
+            function onPauseAnimation( event ) {
+
+                ( isFrameStepping ) ? blendMesh.unPauseAll(): blendMesh.pauseAll();
+
+                isFrameStepping = false;
+
+            }
+
+            function onStepAnimation( event ) {
+
+                blendMesh.unPauseAll();
+                isFrameStepping = true;
+                timeToStep = event.detail.stepSize;
+            }
+
+            function onWeightAnimation(event) {
+
+                var data = event.detail;
+                for ( var i = 0; i < data.anims.length; ++i ) {
+
+                    blendMesh.applyWeight(data.anims[i], data.weights[i]);
+
+                }
+
+            }
+
+            function onCrossfade(event) {
+
+                var data = event.detail;
+
+                blendMesh.stopAll();
+                blendMesh.crossfade( data.from, data.to, data.time );
+
+                isFrameStepping = false;
+
+            }
+
+            function onWarp( event ) {
+
+                var data = event.detail;
+
+                blendMesh.stopAll();
+                blendMesh.warp( data.from, data.to, data.time );
+
+                isFrameStepping = false;
+
+            }
+
+
+            function onLockCameraToggle( event ) {
+
+                var shouldLock = event.detail.shouldLock;
+                controls.enabled = !shouldLock;
+
+            }
+
+            function onShowSkeleton( event ) {
+
+                var shouldShow = event.detail.shouldShow;
+                blendMesh.showSkeleton( shouldShow );
+
+            }
+
+            function onShowModel( event ) {
+
+                var shouldShow = event.detail.shouldShow;
+                blendMesh.showModel( shouldShow );
+
+            }
+
+            function start() {
+
+                blendMesh.scale.x=0.1
+                blendMesh.scale.y=0.1
+                blendMesh.scale.z=0.1
+
+                blendMesh.position.x=9000
+                blendMesh.position.z=9000
+
+                blendMesh.lookAt(new THREE.Vector3(100000,0,100000))
+
+                blendMesh.rotation.y = Math.PI * -135 / 180;
+                scene.add( blendMesh );
+
+                blendMesh.animations[ 'idle' ].weight = 1;
+                blendMesh.animations[ 'walk' ].weight = 0;
+                blendMesh.animations[ 'run' ].weight = 1;
+
+                gui = new BlendCharacterGui(blendMesh.animations);
+
+                blendMesh.play("idle", blendMesh.animations[ 'idle' ].weight);
+
+settings = {
+                            name: 'camp',
+                            targetObject: blendMesh,
+                            cameraPosition: new THREE.Vector3( 0, 20, 20 ),
+                            fixed: false,
+//                            stiffness: i > 0 ? 0.5 / i : 0.01,
+//                            matchRotation: !!(i % 3)
+                        };
+/*                settings = {
+                            name: 'camp',
+                            targetObject: blendMesh,
+                            cameraPosition: new THREE.Vector3(
+                                1 - Math.random() * 2 | 0,
+                                Math.random() * 2 | 0,
+                                5 + Math.random() * 5 | 0
+                            ),
+                            fixed: true,
+                            matchRotation: !!(i % 3)
+                        };*/
+                   
+                    // Add the box as a target object for the TargetCamera.
+                    camera.addTarget( settings );
+                    camera.setTarget('camp');
+                                dat.GUI.toggleHide()
+
+                //isFrameStepping = false;
+            }
+
+
+
 
         function initSky() {
             sky = new THREE.Sky();
@@ -259,19 +422,18 @@ gl_FragColor = vec4(tcolor, tcolor, tcolor, 1.0) *(water + sandy + grass + rocky
 
             }
 
-            var gui = new dat.GUI();
-            gui.add(effectController, "turbidity", 1.0, 20.0, 0.1).onChange(guiChanged);
-            gui.add(effectController, "reileigh", 0.0, 4, 0.001).onChange(guiChanged);
-            gui.add(effectController, "mieCoefficient", 0.0, 0.1, 0.001).onChange(guiChanged);
-            gui.add(effectController, "mieDirectionalG", 0.0, 1, 0.001).onChange(guiChanged);
-            gui.add(effectController, "luminance", 0.0, 2).onChange(guiChanged);;
-            gui.add(effectController, "inclination", 0, 1, 0.0001).onChange(guiChanged);
-            gui.add(effectController, "azimuth", 0, 1, 0.0001).onChange(guiChanged);
-            gui.add(effectController, "sun").onChange(guiChanged);
+            var gui2 = new dat.GUI();
+            gui2.add(effectController, "turbidity", 1.0, 20.0, 0.1).onChange(guiChanged);
+            gui2.add(effectController, "reileigh", 0.0, 4, 0.001).onChange(guiChanged);
+            gui2.add(effectController, "mieCoefficient", 0.0, 0.1, 0.001).onChange(guiChanged);
+            gui2.add(effectController, "mieDirectionalG", 0.0, 1, 0.001).onChange(guiChanged);
+            gui2.add(effectController, "luminance", 0.0, 2).onChange(guiChanged);;
+            gui2.add(effectController, "inclination", 0, 1, 0.0001).onChange(guiChanged);
+            gui2.add(effectController, "azimuth", 0, 1, 0.0001).onChange(guiChanged);
+            gui2.add(effectController, "sun").onChange(guiChanged);
 
             guiChanged();
-            dat.GUI.toggleHide()
-            camera.lookAt(sunSphere.position)
+            //camera.lookAt(sunSphere.position)
 
 
      var texture = loadImage('clouds001.png');
@@ -294,7 +456,7 @@ gl_FragColor = vec4(tcolor, tcolor, tcolor, 1.0) *(water + sandy + grass + rocky
         opacityMiddle: 0.5,
         opacityEnd: 0,
 
-        particlesPerSecond: 10,
+        particlesPerSecond: 3,
     });
 
      particleGroup.addEmitter( emitter );
@@ -380,17 +542,20 @@ gl_FragColor = vec4(tcolor, tcolor, tcolor, 1.0) *(water + sandy + grass + rocky
         var velocity = new THREE.Vector3();
         var onRenderFcts = [];
         var scene = new THREE.Scene();
+        clock = new THREE.Clock();
         //scene.fog = new THREE.Fog(0x111111, 100, 1600);
         //    scene.fog.color.setHSL( 0.1, 0.1, 0.1 );
 
         scene.fog = new THREE.Fog(0x000000, 100, 3000);
 
-        var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 1000000);
-        controls = new THREE.PointerLockControls(camera);
-        controls.getObject().position.x = 15000
-        controls.getObject().position.z = 15000
-        scene.add(controls.getObject());
-        var blocker = document.getElementById('blocker');
+        //var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 1000000);
+        var camera = new THREE.TargetCamera(45, window.innerWidth / window.innerHeight, 0.01, 1000000);
+        scene.add(camera);
+        //controls = new THREE.PointerLockControls(camera);
+        //controls.getObject().position.x = 15
+        //controls.getObject().position.z = 15
+        //scene.add(controls.getObject());
+        /*var blocker = document.getElementById('blocker');
         var instructions = document.getElementById('instructions');
         if (document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element) {
 
@@ -491,7 +656,7 @@ gl_FragColor = vec4(tcolor, tcolor, tcolor, 1.0) *(water + sandy + grass + rocky
             instructions.innerHTML = 'Your browser doesn\'t seem to support Pointer Lock API';
 
         }
-
+*/
 
         var onKeyDown = function(event) {
 
@@ -499,6 +664,14 @@ gl_FragColor = vec4(tcolor, tcolor, tcolor, 1.0) *(water + sandy + grass + rocky
 
                 case 38: // up
                 case 87: // w
+                blendMesh.animations[ 'idle' ].weight = 0;
+                blendMesh.animations[ 'walk' ].weight = 0;
+                blendMesh.animations[ 'run' ].weight = 1;
+
+if (running ==false) {
+                blendMesh.play("run", blendMesh.animations[ 'run' ].weight);
+running=true;
+            }
                     moveForward = true;
                     break;
 
@@ -509,6 +682,15 @@ gl_FragColor = vec4(tcolor, tcolor, tcolor, 1.0) *(water + sandy + grass + rocky
 
                 case 40: // down
                 case 83: // s
+
+                blendMesh.animations[ 'idle' ].weight = 0;
+                blendMesh.animations[ 'walk' ].weight = 0;
+                blendMesh.animations[ 'run' ].weight = 1;
+if (running ==false) {
+                blendMesh.play("run", blendMesh.animations[ 'run' ].weight);
+running=true;
+            }
+
                     moveBackward = true;
                     break;
 
@@ -532,6 +714,12 @@ gl_FragColor = vec4(tcolor, tcolor, tcolor, 1.0) *(water + sandy + grass + rocky
 
                 case 38: // up
                 case 87: // w
+
+                blendMesh.animations[ 'idle' ].weight = 1;
+                blendMesh.animations[ 'walk' ].weight = 0;
+                blendMesh.animations[ 'run' ].weight = 0;
+                blendMesh.play("idle", blendMesh.animations[ 'idle' ].weight);
+running=false
                     moveForward = false;
                     break;
 
@@ -542,6 +730,14 @@ gl_FragColor = vec4(tcolor, tcolor, tcolor, 1.0) *(water + sandy + grass + rocky
 
                 case 40: // down
                 case 83: // s
+
+
+                blendMesh.animations[ 'idle' ].weight = 1;
+                blendMesh.animations[ 'walk' ].weight = 0;
+                blendMesh.animations[ 'run' ].weight = 0;
+                blendMesh.play("idle", blendMesh.animations[ 'idle' ].weight);
+                running=false
+
                     moveBackward = false;
                     break;
 
@@ -615,6 +811,22 @@ gl_FragColor = vec4(tcolor, tcolor, tcolor, 1.0) *(water + sandy + grass + rocky
             },5000)
             */
         initSky();
+
+// listen for messages from the gui
+                window.addEventListener( 'start-animation', onStartAnimation );
+                window.addEventListener( 'stop-animation', onStopAnimation );
+                window.addEventListener( 'pause-animation', onPauseAnimation );
+                window.addEventListener( 'step-animation', onStepAnimation );
+                window.addEventListener( 'weight-animation', onWeightAnimation );
+                window.addEventListener( 'crossfade', onCrossfade );
+                window.addEventListener( 'warp', onWarp );
+                window.addEventListener( 'toggle-lock-camera', onLockCameraToggle );
+                window.addEventListener( 'toggle-show-skeleton', onShowSkeleton );
+                window.addEventListener( 'toggle-show-model', onShowModel );
+
+                blendMesh = new THREE.BlendCharacter();
+                blendMesh.load( "marine_anims.js", start );
+               
 
         var parameters = {
             width: 10000,
@@ -874,6 +1086,8 @@ gl_FragColor = vec4(tcolor, tcolor, tcolor, 1.0) *(water + sandy + grass + rocky
 
 
         onRenderFcts.push(function(delta, now) {
+
+                camera.update();
 particleGroup.tick(delta)            
 zt += delta/500
 z=zt
@@ -896,7 +1110,7 @@ z=zt
             //controls.movementSpeed = 0.33 ;
             //              controls.update();
 
-            if (controlsEnabled) {
+            if (blendMesh.position != undefined) {
                 //raycaster.ray.origin.copy( controls.getObject().position );
                 //raycaster.ray.origin.y -= 10;
 
@@ -912,15 +1126,23 @@ z=zt
 
                 velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
 
-                if (moveForward) velocity.z -= 40.0 * delta * 100;
-                if (moveBackward) velocity.z += 40.0 * delta * 100;
+                if (moveForward) velocity.z -= 40.0 * delta * 30;
+                if (moveBackward) velocity.z += 40.0 * delta * 30;
 
-                if (moveLeft) velocity.x -= 40.0 * delta * 100;
-                if (moveRight) velocity.x += 40.0 * delta * 100;
+                if (moveLeft) velocity.x -= 40.0 * delta * 15;
+                if (moveRight) velocity.x += 40.0 * delta * 15;
 
-                controls.getObject().translateX(velocity.x * delta);
+                if (blendMesh.position !=undefined) {
+
+                blendMesh.translateZ(velocity.z * delta);
+//                blendMesh.position.y=controls.getObject().position.y-20
                 //controls.getObject().translateY( velocity.y * delta );
-                controls.getObject().translateZ(velocity.z * delta);
+                blendMesh.translateX(velocity.x * delta);
+            }
+               
+                
+
+
                 /*
                                     if ( controls.getObject().position.y < 10 ) {
 
@@ -936,14 +1158,16 @@ z=zt
             }
             //console.log(camera.position)
             //if (camera.position.x==NaN)camera.position=new Vector3(0,0,0)
-            cx = controls.getObject().position.x % 1000;
-            cz = controls.getObject().position.z % 1000;
+            
+            if ( blendMesh.position != undefined ) {
+            cx = blendMesh.position.x % 1000;
+            cz = blendMesh.position.z % 1000;
 
 
 
 
-            tcx = Math.floor(controls.getObject().position.x / 1000);
-            tcz = Math.floor(controls.getObject().position.z / 1000);
+            tcx = Math.floor(blendMesh.position.x / 1000);
+            tcz = Math.floor(blendMesh.position.z / 1000);
 
 
 
@@ -1029,27 +1253,31 @@ z=zt
 
 
             //console.log(tcx+tcz)
-            if (controls.getObject().position.x < 1 + 1 || controls.getObject().position.z < 1 + 1
+            if (blendMesh.position.x < 1 + 1 || blendMesh.position.z < 1 + 1
                 //          ||
-                //          controls.getObject().position.x>1000*TILES-1 || controls.getObject().position.z >1000*TILES-1
+                //          blendMesh.position.x>1000*TILES-1 || blendMesh.position.z >1000*TILES-1
             )
-                controls.getObject().position.y = -150
+                blendMesh.position.y = -150
             else {
 
-                //      controls.getObject().position.y=THREEx.Terrain.planeToHeightMapCoords(heightMaps[tcx+tcz], meshes[tcx+tcz], cx/2, cz/2)+400
+                //      blendMesh.position.y=THREEx.Terrain.planeToHeightMapCoords(heightMaps[tcx+tcz], meshes[tcx+tcz], cx/2, cz/2)+400
 
 
-                if (ld == true) controls.getObject().position.y = THREEx.Terrain.planeToHeightMapCoords(MAP[tcx][tcz], MAPMESHES[tcx][tcz], cx, cz) + 20
-                if (controls.getObject().position.y < -150) controls.getObject().position.y = -150
+                if (ld == true) blendMesh.position.y = THREEx.Terrain.planeToHeightMapCoords(MAP[tcx][tcz], MAPMESHES[tcx][tcz], cx, cz) + 20
+                if (blendMesh.position.y < -150) blendMesh.position.y = -150
             }
 
+//            if (blendMesh.position != undefined) 
+  //          blendMesh.lookAt(new THREE.Vector3(blendMesh.position.x-20,blendMesh.position.y,blendMesh.position.z-20))
+
+
             //              mirrorMesh.position.y = - 1600;
-            mirrorMesh.position.x = controls.getObject().position.x;
-            mirrorMesh.position.z = controls.getObject().position.z;
-            $('#pos').html(Math.round(controls.getObject().position.x) + ' ' + Math.round(controls.getObject().position.y) + ' ' + Math.round(controls.getObject().position.z))
+            mirrorMesh.position.x = blendMesh.position.x;
+            mirrorMesh.position.z = blendMesh.position.z;
+            $('#pos').html(Math.round(blendMesh.position.x) + ' ' + Math.round(blendMesh.position.y) + ' ' + Math.round(blendMesh.position.z))
 
 
-
+}
 
             //camera.lookAt( new THREE.Vector3(100000,-2000,100000))
             //gmesh.rotation.y+=.1;
@@ -1068,6 +1296,19 @@ z=zt
         var lastTimeMsec = null
         requestAnimationFrame(function animate(nowMsec) {
             if (okok == true) {
+if (gui != undefined) {
+                     var scale = gui.getTimeScale();
+                var delta = clock.getDelta();
+                var stepSize = (!isFrameStepping) ? delta * scale: timeToStep;
+
+                // modify blend weights
+                if (blendMesh.skeletonHelper)
+                blendMesh.update( stepSize );
+                gui.update();
+                THREE.AnimationHandler.update( stepSize );
+
+}
+
                 requestAnimationFrame(animate);
                 lastTimeMsec = lastTimeMsec || nowMsec - 1000 / 60
                 var deltaMsec = Math.min(200, nowMsec - lastTimeMsec)
@@ -1077,6 +1318,24 @@ z=zt
                 })
             }
         })
+
+
+  var onMouseMove = function ( event ) {
+
+    var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
+    var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
+  
+  rY=event.movementX/500
+
+    if (blendMesh.position !=undefined) {
+          
+    $('#pos2').html(rY)
+      blendMesh.rotation.y -= Math.PI * rY
+    }
+
+  };
+
+  document.addEventListener( 'mousemove', onMouseMove, false );
     </script>
             <div id="toolbar">
                 <ul id="status" style="display:none;">

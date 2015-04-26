@@ -5,7 +5,7 @@
 THREE.PointerLockControls = function ( camera ) {
 
   var scope = this;
-
+  scope.rY = 0;
   camera.rotation.set( 0, 0, 0 );
 
   var pitchObject = new THREE.Object3D();
@@ -24,10 +24,25 @@ THREE.PointerLockControls = function ( camera ) {
     var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
     var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
 
-    yawObject.rotation.y -= movementX * 0.002;
+    yawObject.rotation.y = movementX * 0.002;
+    scope.rY+=event.movementX/100* PI_2
+
+    if (blendMesh.position !=undefined) {
+                controls.getObject().position.x= blendMesh.position.x+Math.cos(event.offsetX)-10
+    
+                controls.getObject().position.z=blendMesh.position.z+Math.sin(event.offsetX)-10
+                var lookAtVector = new THREE.Vector3(0,0, -1);
+lookAtVector.applyQuaternion(blendMesh.quaternion);
+controls.getObject().lookAt(lookAtVector)
+            }
     pitchObject.rotation.x -= movementY * 0.002;
 
     pitchObject.rotation.x = Math.max( - PI_2, Math.min( PI_2, pitchObject.rotation.x ) );
+
+    $('#pos2').html(scope.rY)
+    if (blendMesh.position != undefined) {
+      blendMesh.rotation.y = -scope.rY
+    }
 
   };
 

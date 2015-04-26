@@ -170,7 +170,7 @@ function showChat() {
 	$("entry").focus();
 	scrollDown(base);
 			setInterval(function(){
-
+/*
 		var route = "chat.chatHandler.send";
 pomelo.request(route, {
 				rid: rid,
@@ -182,7 +182,7 @@ pomelo.request(route, {
 					addMessage(username, 'all', '__'+controls.getObject().position.x+','+controls.getObject().position.y+','+controls.getObject().position.z);
 				
 			});
-
+*/
 					},1000);
 };
 
