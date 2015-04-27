@@ -113,6 +113,7 @@ function tip(type, name) {
 // init user list
 function initUserList(data) {
 	users = data.users;
+	if (users != undefined)
 	for(var i = 0; i < users.length; i++) {
 		var slElement = $(document.createElement("option"));
 		slElement.val(users[i]);

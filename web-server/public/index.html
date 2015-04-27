@@ -347,7 +347,7 @@ settings = {
                             targetObject: blendMesh,
                             cameraPosition: new THREE.Vector3( 0, 20, 20 ),
                             fixed: false,
-//                            stiffness: i > 0 ? 0.5 / i : 0.01,
+                            stiffness: .1
 //                            matchRotation: !!(i % 3)
                         };
 /*                settings = {
@@ -1109,7 +1109,7 @@ z=zt
 
             //controls.movementSpeed = 0.33 ;
             //              controls.update();
-
+if (moveForward || moveBackward || moveLeft || moveRight  )
             if (blendMesh.position != undefined) {
                 //raycaster.ray.origin.copy( controls.getObject().position );
                 //raycaster.ray.origin.y -= 10;
@@ -1132,13 +1132,11 @@ z=zt
                 if (moveLeft) velocity.x -= 40.0 * delta * 15;
                 if (moveRight) velocity.x += 40.0 * delta * 15;
 
-                if (blendMesh.position !=undefined) {
 
                 blendMesh.translateZ(velocity.z * delta);
 //                blendMesh.position.y=controls.getObject().position.y-20
                 //controls.getObject().translateY( velocity.y * delta );
                 blendMesh.translateX(velocity.x * delta);
-            }
                
                 
 
