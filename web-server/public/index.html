@@ -365,7 +365,7 @@ settings = {
                     // Add the box as a target object for the TargetCamera.
                     camera.addTarget( settings );
                     camera.setTarget('camp');
-                                dat.GUI.toggleHide()
+                                //dat.GUI.toggleHide()
 
                 //isFrameStepping = false;
             }
@@ -387,7 +387,7 @@ settings = {
 
             var effectController = {
                 turbidity: 10,
-                reileigh: 2,
+                reileigh: 1.5,
                 mieCoefficient: 0.005,
                 mieDirectionalG: 0.8,
                 luminance: 1,
@@ -1129,8 +1129,8 @@ if (moveForward || moveBackward || moveLeft || moveRight  )
                 if (moveForward) velocity.z -= 40.0 * delta * 30;
                 if (moveBackward) velocity.z += 40.0 * delta * 30;
 
-                if (moveLeft) velocity.x -= 40.0 * delta * 15;
-                if (moveRight) velocity.x += 40.0 * delta * 15;
+                if (moveLeft) velocity.x -= 20.0 * delta * 15;
+                if (moveRight) velocity.x += 20.0 * delta * 15;
 
 
                 blendMesh.translateZ(velocity.z * delta);
@@ -1261,7 +1261,7 @@ if (moveForward || moveBackward || moveLeft || moveRight  )
                 //      blendMesh.position.y=THREEx.Terrain.planeToHeightMapCoords(heightMaps[tcx+tcz], meshes[tcx+tcz], cx/2, cz/2)+400
 
 
-                if (ld == true) blendMesh.position.y = THREEx.Terrain.planeToHeightMapCoords(MAP[tcx][tcz], MAPMESHES[tcx][tcz], cx, cz) + 20
+                if (ld == true) blendMesh.position.y = THREEx.Terrain.planeToHeightMapCoords(MAP[tcx][tcz], MAPMESHES[tcx][tcz], cx, cz) + 10
                 if (blendMesh.position.y < -150) blendMesh.position.y = -150
             }
 
