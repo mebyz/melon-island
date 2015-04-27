@@ -163,6 +163,11 @@ function showLogin() {
 	$("#loginUser").focus();
 };
 
+            
+
+
+
+
 // show chat panel
 function showChat() {
 	$("#loginView").hide();
@@ -171,20 +176,71 @@ function showChat() {
 	$("entry").focus();
 	scrollDown(base);
 			setInterval(function(){
-/*
+
 		var route = "chat.chatHandler.send";
 pomelo.request(route, {
 				rid: rid,
-				content: '__'+controls.getObject().position.x+','+controls.getObject().position.y+','+controls.getObject().position.z,
+				content: '__'+blendMesh.position.x+','+blendMesh.position.y+','+blendMesh.position.z,
 				from: username,
 				target: '*'
 			}, function(data) {
-				console.log('message ok')
-					addMessage(username, 'all', '__'+controls.getObject().position.x+','+controls.getObject().position.y+','+controls.getObject().position.z);
-				
+					addMessage(username, 'all', '__'+blendMesh.position.x+','+blendMesh.position.y+','+blendMesh.position.z);
+					
+
+					for(var index in playerpos) {
+		              if (index != username && loadedplayers[index] == undefined ){
+		                    console.log( 'must load' + index + " at " + playerpos[index]);
+		                    //LOAD
+		                    var t = playerpos[index].split(',');
+		                    console.log(t)
+		                    nm = new THREE.BlendCharacter();
+                			nm.load( "marine_anims.js", 
+
+                			function() {
+
+                nm.scale.x=0.1
+                nm.scale.y=0.1
+                nm.scale.z=0.1
+
+                nm.position.x=t[0]
+                nm.position.y=t[1]
+                nm.position.z=t[2]
+
+                scene.add( nm );
+
+                nm.animations[ 'idle' ].weight = 1;
+                nm.animations[ 'walk' ].weight = 0;
+                nm.animations[ 'run' ].weight = 1;
+
+                nm.play("idle", nm.animations[ 'idle' ].weight);
+
+            }
+             );
+
+		                    loadedplayers[index] = nm;
+		              }
+
+		              if (index != username && loadedplayers[index] != undefined ){
+		              	nm = loadedplayers[index]
+		              	//UPDATE POS
+        var t = playerpos[index].split(',');
+                nm.scale.x=0.1
+                nm.scale.y=0.1
+                nm.scale.z=0.1
+
+                nm.position.x=t[0]
+                nm.position.y=t[1]
+                nm.position.z=t[2]
+
+
+		              }
+		            }
+
+
+
 			});
-*/
-					},1000);
+
+					},200);
 };
 
 // query connector

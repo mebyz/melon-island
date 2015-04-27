@@ -24,7 +24,8 @@
         </script>
 
 <script type="text/javascript">
-var rY=0;
+    loadedplayers = [];
+    var rY=0;
     var precision = 'lowp'
     var running = false;
     var fog;
@@ -551,113 +552,7 @@ settings = {
         //var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 1000000);
         var camera = new THREE.TargetCamera(45, window.innerWidth / window.innerHeight, 0.01, 1000000);
         scene.add(camera);
-        //controls = new THREE.PointerLockControls(camera);
-        //controls.getObject().position.x = 15
-        //controls.getObject().position.z = 15
-        //scene.add(controls.getObject());
-        /*var blocker = document.getElementById('blocker');
-        var instructions = document.getElementById('instructions');
-        if (document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element) {
-
-            controlsEnabled = true;
-            controls.enabled = true;
-            blocker.style.display = 'none';
-
-        } else {
-
-            controls.enabled = false;
-            blocker.style.display = '-webkit-box';
-            blocker.style.display = '-moz-box';
-            blocker.style.display = 'box';
-            instructions.style.display = '';
-        }
-
-        var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
-        if (havePointerLock) {
-
-            var element = document.body;
-
-            var pointerlockchange = function(event) {
-
-                if (document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element) {
-
-                    controlsEnabled = true;
-                    controls.enabled = true;
-
-                    blocker.style.display = 'none';
-
-                } else {
-
-                    controls.enabled = false;
-
-                    blocker.style.display = '-webkit-box';
-                    blocker.style.display = '-moz-box';
-                    blocker.style.display = 'box';
-
-                    instructions.style.display = '';
-
-                }
-
-            }
-
-            var pointerlockerror = function(event) {
-
-                instructions.style.display = '';
-
-            }
-
-            // Hook pointer lock state change events
-            document.addEventListener('pointerlockchange', pointerlockchange, false);
-            document.addEventListener('mozpointerlockchange', pointerlockchange, false);
-            document.addEventListener('webkitpointerlockchange', pointerlockchange, false);
-
-            document.addEventListener('pointerlockerror', pointerlockerror, false);
-            document.addEventListener('mozpointerlockerror', pointerlockerror, false);
-            document.addEventListener('webkitpointerlockerror', pointerlockerror, false);
-
-            instructions.addEventListener('click', function(event) {
-
-                instructions.style.display = 'none';
-
-                // Ask the browser to lock the pointer
-                element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;
-
-                if (/Firefox/i.test(navigator.userAgent)) {
-
-                    var fullscreenchange = function(event) {
-
-                        if (document.fullscreenElement === element || document.mozFullscreenElement === element || document.mozFullScreenElement === element) {
-
-                            document.removeEventListener('fullscreenchange', fullscreenchange);
-                            document.removeEventListener('mozfullscreenchange', fullscreenchange);
-
-                            element.requestPointerLock();
-                        }
-
-                    }
-
-                    document.addEventListener('fullscreenchange', fullscreenchange, false);
-                    document.addEventListener('mozfullscreenchange', fullscreenchange, false);
-
-                    element.requestFullscreen = element.requestFullscreen || element.mozRequestFullscreen || element.mozRequestFullScreen || element.webkitRequestFullscreen;
-
-                    element.requestFullscreen();
-
-                } else {
-
-                    element.requestPointerLock();
-
-                }
-
-            }, false);
-
-        } else {
-
-            instructions.innerHTML = 'Your browser doesn\'t seem to support Pointer Lock API';
-
-        }
-*/
-
+       
         var onKeyDown = function(event) {
 
             switch (event.keyCode) {
@@ -753,20 +648,9 @@ running=false
         document.addEventListener('keydown', onKeyDown, false);
         document.addEventListener('keyup', onKeyUp, false);
 
-        //              controls.addEventListener( 'change', render );
-
-        //              camera.lookAt( new THREE.Vector3(0,0,0))
-        ;
+      
         (function() {
-            /*      var light   = new THREE.AmbientLight( 0x666666)
-                scene.add( light )
-                var light   = new THREE.DirectionalLight('0xccddee', 2)
-                light.position.set(0.5, 0.0, 2)
-                scene.add( light )
-                var light   = new THREE.DirectionalLight('white', 5)
-                light.position.set(0.5, 0.0, 2)
-                scene.add( light )
-                */
+           
             light = new THREE.DirectionalLight('white', 0.75 * 2)
             light.position.set(-0.5, -0.5, -2)
             scene.add(light)
@@ -780,36 +664,7 @@ running=false
         setTimeout(function() {
                 ld = true
             }, 5000)
-            /*setTimeout(function(){
-            for (var i = 0; i < TILES; i++) {
-            for (var j = 0; j < TILES; j++) {
-                addTile(i,j)
-            }
-            }
-            },5000)*/
-            //gmesh    = new THREEx.createGrassTufts(posgrass,'images/grass01.png')
-            //scene.add(gmesh)
-            //gmesh    = new THREEx.createGrassTufts(posgrass2,'images/grass02.png')
-            //scene.add(gmesh)
-            //gmesh    = new THREEx.createGrassTufts(posgrass3,'images/flowers01.png')
-            //scene.add(gmesh)
-            //gmesh    = new THREEx.createGrassTufts(posgrass4,'images/flowers02.png')
-            //scene.add(gmesh)
-            /*
-            setTimeout(function(){
-
-            for (var i = 0; i < postrees.length; i++) {
-            var r = Math.round(Math.random()*68)
-            if (nature_models[r]!= undefined){ 
-            var child = nature_models[r].clone();
-            child.name="nature_"+i;
-            child.position.set(postrees[i].x, postrees[i].y , postrees[i].z);
-            scene.add(child);
-            child.updateMatrixWorld(true);
-            }
-            }
-            },5000)
-            */
+           
         initSky();
 
 // listen for messages from the gui
@@ -873,78 +728,7 @@ running=false
         scene.add(mirrorMesh);
 
         var worker = new Worker('/worker.js');
-        /*worker.onmessage = function(e) {
-        var data = e.data;
-             x=data.data.x
-          y=data.data.y
-         heightMap  = THREEx.Terrain.allocateHeightMap(HEIGHTMAPSIZE, HEIGHTMAPSIZE)
-            THREEx.Terrain.simplexHeightMap(heightMap,(HEIGHTMAPSIZE-1)*x,(HEIGHTMAPSIZE-1)*y)
-            p =[]
-            p2 =[]
-            p3 =[]
-            p4 =[]
-             geometry   = THREEx.Terrain.heightMapToPlaneGeometry(heightMap,x,y,p,p2,p3,p4)
-            gp    = new THREEx.createGrassTufts(p,'images/grass01.png')
-            scene.add(gp)
-        MAPGRASS[x][y]=gp
-        gp    = new THREEx.createGrassTufts(p2,'images/grass02.png')
-        scene.add(gp)
-        MAPGRASS2[x][y]=gp
-        gp    = new THREEx.createGrassTufts(p3,'images/flowers01.png')
-        scene.add(gp)
-        MAPGRASS3[x][y]=gp
-        gp    = new THREEx.createGrassTufts(p4,'images/flowers02.png')
-        scene.add(gp)
-        MAPGRASS4[x][y]=gp
-
-
-            THREEx.Terrain.heightMapToVertexColor(heightMap, geometry)
-
-            var canvas  = THREEx.Terrain.heightMapToCanvas(heightMap)
-
-            document.body.appendChild(canvas)
-
-
-        var texture = new THREE.Texture(canvas);
-        texture.needsUpdate = true;
-
-            var customUniforms = {
-                bumpTexture:    { type: "t", value: texture },
-                tcolor:         { type: "f", value: tcolor },
-                bumpScale:      { type: "f", value: 1.0 },
-                oceanTexture:   { type: "t", value: oceanTexture },
-                sandyTexture:   { type: "t", value: sandyTexture },
-                grassTexture:   { type: "t", value: grassTexture },
-                rockyTexture:   { type: "t", value: rockyTexture },
-                snowyTexture:   { type: "t", value: snowyTexture },
-            };
-            
-            var material = new THREE.ShaderMaterial( 
-            {
-                uniforms: customUniforms,
-                vertexShader:   document.getElementById( 'vertexShader'   ).textContent,
-                fragmentShader: document.getElementById( 'fragmentShader' ).textContent,
-            }   );
-             mesh   = new THREE.Mesh( geometry, material );
-             MAPU[x][y]=material 
-            scene.add( mesh );
-            mesh.position.x = 1000*x+500
-            mesh.position.z = 1000*y+500
-            mesh.scale.z    = 0.01
-
-            mesh.rotateX(-Math.PI/2)
-            mesh.scale.multiplyScalar(1000) 
-        MAP[x][y]=heightMap;
-        MAPMESHES[x][y]=mesh;
-        geometry.dispose();
-        material.dispose();
-        texture.dispose();
-        }
-        //worker.postMessage({
-        //  some_data: 'foo',
-        //});
-        */
-
+        
         function addTile(x, y, no) {
 
             if (no != true) {
@@ -1104,23 +888,10 @@ z=zt
                 sunSphere.position.z = distance * Math.sin(phi) * Math.cos(theta);
 
                 sky.uniforms.sunPosition.value.copy(sunSphere.position);
-            //      camera.position.x += (mouse.x*500000 - camera.position.x) 
-            //      camera.position.z+= (mouse.y*500000 - (camera.position.z))
-
-            //controls.movementSpeed = 0.33 ;
-            //              controls.update();
+        
 if (moveForward || moveBackward || moveLeft || moveRight  )
             if (blendMesh.position != undefined) {
-                //raycaster.ray.origin.copy( controls.getObject().position );
-                //raycaster.ray.origin.y -= 10;
-
-                //var intersections = raycaster.intersectObjects( objects );
-
-                //var isOnObject = intersections.length > 0;
-
-                //var time = performance.now();
-                //var delta = ( time - prevTime ) / 1000;
-
+      
                 velocity.x -= velocity.x * 10.0 * delta;
                 velocity.z -= velocity.z * 10.0 * delta;
 
@@ -1134,28 +905,13 @@ if (moveForward || moveBackward || moveLeft || moveRight  )
 
 
                 blendMesh.translateZ(velocity.z * delta);
-//                blendMesh.position.y=controls.getObject().position.y-20
-                //controls.getObject().translateY( velocity.y * delta );
-                blendMesh.translateX(velocity.x * delta);
+               blendMesh.translateX(velocity.x * delta);
                
                 
 
 
-                /*
-                                    if ( controls.getObject().position.y < 10 ) {
-
-                                        velocity.y = 0;
-                                        controls.getObject().position.y = 10;
-
-                                        canJump = true;
-
-                                    }
-                */
-                //prevTime = time;
 
             }
-            //console.log(camera.position)
-            //if (camera.position.x==NaN)camera.position=new Vector3(0,0,0)
             
             if ( blendMesh.position != undefined ) {
             cx = blendMesh.position.x % 1000;
@@ -1166,12 +922,11 @@ if (moveForward || moveBackward || moveLeft || moveRight  )
 
             tcx = Math.floor(blendMesh.position.x / 1000);
             tcz = Math.floor(blendMesh.position.z / 1000);
-
-
-
-
+            
+            
             var notremove = true
             var nearbytiles = [];
+
             preload = 1;
 
 
@@ -1248,42 +1003,24 @@ if (moveForward || moveBackward || moveLeft || moveRight  )
 
 
             }
-
-
-            //console.log(tcx+tcz)
             if (blendMesh.position.x < 1 + 1 || blendMesh.position.z < 1 + 1
-                //          ||
-                //          blendMesh.position.x>1000*TILES-1 || blendMesh.position.z >1000*TILES-1
             )
                 blendMesh.position.y = -150
             else {
 
-                //      blendMesh.position.y=THREEx.Terrain.planeToHeightMapCoords(heightMaps[tcx+tcz], meshes[tcx+tcz], cx/2, cz/2)+400
-
+           
 
                 if (ld == true) blendMesh.position.y = THREEx.Terrain.planeToHeightMapCoords(MAP[tcx][tcz], MAPMESHES[tcx][tcz], cx, cz) + 10
                 if (blendMesh.position.y < -150) blendMesh.position.y = -150
             }
 
-//            if (blendMesh.position != undefined) 
-  //          blendMesh.lookAt(new THREE.Vector3(blendMesh.position.x-20,blendMesh.position.y,blendMesh.position.z-20))
-
-
-            //              mirrorMesh.position.y = - 1600;
             mirrorMesh.position.x = blendMesh.position.x;
             mirrorMesh.position.z = blendMesh.position.z;
             $('#pos').html(Math.round(blendMesh.position.x) + ' ' + Math.round(blendMesh.position.y) + ' ' + Math.round(blendMesh.position.z))
 
 
 }
-
-            //camera.lookAt( new THREE.Vector3(100000,-2000,100000))
-            //gmesh.rotation.y+=.1;
-
-
-            //              controls.movementSpeed = 1;
-            //              controls.update( delta );
-        })
+       })
 
         onRenderFcts.push(function() {
             water.material.uniforms.time.value += 1.0 / 60.0;
