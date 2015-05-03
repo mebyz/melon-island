@@ -176,16 +176,51 @@ function showChat() {
 	$("entry").focus();
 	scrollDown(base);
 			setInterval(function(){
-
+if (playerpos[username] != blendMesh.position.x+','+blendMesh.position.y+','+blendMesh.position.z+','+blendMesh.rotation.x+','+blendMesh.rotation.y+','+blendMesh.rotation.z)
+					{
 		var route = "chat.chatHandler.send";
 pomelo.request(route, {
 				rid: rid,
-				content: '__'+blendMesh.position.x+','+blendMesh.position.y+','+blendMesh.position.z,
+				content: '__'+blendMesh.position.x+','+blendMesh.position.y+','+blendMesh.position.z+','+blendMesh.rotation.x+','+blendMesh.rotation.y+','+blendMesh.rotation.z,
 				from: username,
 				target: '*'
 			}, function(data) {
-					addMessage(username, 'all', '__'+blendMesh.position.x+','+blendMesh.position.y+','+blendMesh.position.z);
-					
+
+					addMessage(username, 'all', '__'+blendMesh.position.x+','+blendMesh.position.y+','+blendMesh.position.z+','+blendMesh.rotation.x+','+blendMesh.rotation.y+','+blendMesh.rotation.z);
+
+			});
+}
+					},50);
+};
+
+// query connector
+function queryEntry(uid, callback) {
+	var route = 'gate.gateHandler.queryEntry';
+	pomelo.init({
+		host: window.location.hostname,
+		port: 3014,
+		log: true
+	}, function() {
+		pomelo.request(route, {
+			uid: uid
+		}, function(data) {
+			pomelo.disconnect();
+			if(data.code === 500) {
+				showError(LOGIN_ERROR);
+				return;
+			}
+			callback(data.host, data.port);
+		});
+	});
+};
+
+$(document).ready(function() {
+	//when first time into chat room.
+	showLogin();
+
+	//wait message from the server.
+	pomelo.on('onChat', function(data) {
+		addMessage(data.from, data.target, data.msg);
 
 					for(var index in playerpos) {
 		              if (index != username && loadedplayers[index] == undefined ){
@@ -220,57 +255,24 @@ pomelo.request(route, {
 		                    loadedplayers[index] = nm;
 		              }
 
-		              if (index != username && loadedplayers[index] != undefined ){
+		              if (index != username && loadedplayers[index] != undefined && loadedplayers[index].position != undefined){
 		              	nm = loadedplayers[index]
 		              	//UPDATE POS
         var t = playerpos[index].split(',');
-                nm.scale.x=0.1
-                nm.scale.y=0.1
-                nm.scale.z=0.1
-
+//          nm.translateX(.00001)
+//          nm.translateY(.00001)
+//          nm.translateZ(.00001)
                 nm.position.x=t[0]
                 nm.position.y=t[1]
                 nm.position.z=t[2]
+                nm.rotation.x=t[3]
+                nm.rotation.y=t[4]
+                nm.rotation.z=t[5]
 
+    $('#pos2').html(nm.position)
 
 		              }
 		            }
-
-
-
-			});
-
-					},200);
-};
-
-// query connector
-function queryEntry(uid, callback) {
-	var route = 'gate.gateHandler.queryEntry';
-	pomelo.init({
-		host: window.location.hostname,
-		port: 3014,
-		log: true
-	}, function() {
-		pomelo.request(route, {
-			uid: uid
-		}, function(data) {
-			pomelo.disconnect();
-			if(data.code === 500) {
-				showError(LOGIN_ERROR);
-				return;
-			}
-			callback(data.host, data.port);
-		});
-	});
-};
-
-$(document).ready(function() {
-	//when first time into chat room.
-	showLogin();
-
-	//wait message from the server.
-	pomelo.on('onChat', function(data) {
-		addMessage(data.from, data.target, data.msg);
 		$("#chatHistory").show();
 		if(data.from !== username)
 			tip('message', data.from);

@@ -238,7 +238,7 @@ THREEx.Terrain.planeToHeightMapCoords	= function(heightMap, planeMesh, x, z){
 	position.y	= (position.y-0.5)*2
 	position.y	*= planeMesh.scale.z
 
-	$('#pos2').html(position.x+' '+ position.z)
+//	$('#pos2').html(position.x+' '+ position.z)
 	
 	return position.y
 }

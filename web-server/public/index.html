@@ -25,6 +25,7 @@
 
 <script type="text/javascript">
     loadedplayers = [];
+    loadedplayersTarget = [];
     var rY=0;
     var precision = 'lowp'
     var running = false;
@@ -1061,11 +1062,15 @@ if (gui != undefined) {
     var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
   
   rY=event.movementX/500
+  rX=-event.clientY/30+20
 
     if (blendMesh.position !=undefined) {
           
-    $('#pos2').html(rY)
+    $('#pos2').html(rX)
       blendMesh.rotation.y -= Math.PI * rY
+
+      settings.cameraPosition.y = rX
+     
     }
 
   };
