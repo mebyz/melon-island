@@ -328,8 +328,8 @@ gl_FragColor = vec4(tcolor, tcolor, tcolor, 1.0) *(water + sandy + grass + rocky
                 blendMesh.scale.y=0.1
                 blendMesh.scale.z=0.1
 
-                blendMesh.position.x=9000
-                blendMesh.position.z=9000
+                blendMesh.position.x=10000
+                blendMesh.position.z=10000
 
                 blendMesh.lookAt(new THREE.Vector3(100000,0,100000))
 
@@ -347,7 +347,7 @@ gl_FragColor = vec4(tcolor, tcolor, tcolor, 1.0) *(water + sandy + grass + rocky
 settings = {
                             name: 'camp',
                             targetObject: blendMesh,
-                            cameraPosition: new THREE.Vector3( 0, 20, 20 ),
+                            cameraPosition: new THREE.Vector3( 0, 30, 30 ),
                             fixed: false,
                             stiffness: .1
 //                            matchRotation: !!(i % 3)
@@ -667,6 +667,35 @@ running=false
             }, 5000)
            
         initSky();
+        setTimeout( function() {
+
+
+var loader = new THREE.ObjectLoader();
+loader.load("medieval-house-2.json",function ( obj ) {
+  scene.add( obj );
+  house=obj
+  house.scale.x=30
+  house.scale.y=30
+  house.scale.z=30
+
+  house.position.x=9400
+  house.position.z=10300
+  house.position.y=-180
+ hhcx = house.position.x % 1000;
+            hhcz = house.position.z % 1000;
+
+
+
+            hcx = Math.floor(house.position.x / 1000);
+            hcz = Math.floor(house.position.z / 1000);
+house.position.y = THREEx.Terrain.planeToHeightMapCoords(MAP[hcx][hcz], MAPMESHES[hcx][hcz],hhcx, hhcz) + 10
+            house.children[38].visible=false
+
+});
+
+
+
+        },5000)
 
 // listen for messages from the gui
                 window.addEventListener( 'start-animation', onStartAnimation );
@@ -1006,13 +1035,13 @@ if (moveForward || moveBackward || moveLeft || moveRight  )
             }
             if (blendMesh.position.x < 1 + 1 || blendMesh.position.z < 1 + 1
             )
-                blendMesh.position.y = -150
+                blendMesh.position.y = -200
             else {
 
            
 
                 if (ld == true) blendMesh.position.y = THREEx.Terrain.planeToHeightMapCoords(MAP[tcx][tcz], MAPMESHES[tcx][tcz], cx, cz) + 10
-                if (blendMesh.position.y < -150) blendMesh.position.y = -150
+                if (blendMesh.position.y < -200) blendMesh.position.y = -200
             }
 
             mirrorMesh.position.x = blendMesh.position.x;
