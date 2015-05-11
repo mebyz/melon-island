@@ -24,6 +24,7 @@
         </script>
 
 <script type="text/javascript">
+var bly=0
     loadedplayers = [];
     loadedplayersTarget = [];
     var rY=0;
@@ -678,8 +679,8 @@ loader.load("medieval-house-2.json",function ( obj ) {
   house.scale.y=30
   house.scale.z=30
 
-  house.position.x=9400
-  house.position.z=10300
+  house.position.x=9300
+  house.position.z=10250
   house.position.y=-180
  hhcx = house.position.x % 1000;
             hhcz = house.position.z % 1000;
@@ -930,13 +931,20 @@ if (moveForward || moveBackward || moveLeft || moveRight  )
                 if (moveForward) velocity.z -= 40.0 * delta * 30;
                 if (moveBackward) velocity.z += 40.0 * delta * 30;
 
-                if (moveLeft) velocity.x -= 20.0 * delta * 15;
-                if (moveRight) velocity.x += 20.0 * delta * 15;
+            //    if (moveLeft) velocity.x -= 20.0 * delta * 15;
+            //    if (moveRight) velocity.x += 20.0 * delta * 15;
 
+
+     bly = 0
+     if (moveLeft) bly = .05
+     if (moveRight) bly = -.05
+
+ blendMesh.rotation.y += bly
 
                 blendMesh.translateZ(velocity.z * delta);
                blendMesh.translateX(velocity.x * delta);
                
+      
                 
 
 
@@ -1040,7 +1048,7 @@ if (moveForward || moveBackward || moveLeft || moveRight  )
 
            
 
-                if (ld == true) blendMesh.position.y = THREEx.Terrain.planeToHeightMapCoords(MAP[tcx][tcz], MAPMESHES[tcx][tcz], cx, cz) + 10
+                if (ld == true) blendMesh.position.y = THREEx.Terrain.planeToHeightMapCoords(MAP[tcx][tcz], MAPMESHES[tcx][tcz], cx, cz) 
                 if (blendMesh.position.y < -200) blendMesh.position.y = -200
             }
 
@@ -1095,7 +1103,7 @@ if (gui != undefined) {
 
     if (blendMesh.position !=undefined) {
           
-    $('#pos2').html(rX)
+    //$('#pos2').html(rX)
       blendMesh.rotation.y -= Math.PI * rY
 
       settings.cameraPosition.y = rX
