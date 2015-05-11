@@ -171,5 +171,5 @@ THREE.TargetCamera.prototype.update = function( dt ) {
         this.position.copy( target.cameraPosition );
         this.lookAt( target.targetObject.position );
     }
-        this.lookAt( new THREE.Vector3(target.targetObject.position.x,target.targetObject.position.y+10,target.targetObject.position.z) );
+        this.lookAt( new THREE.Vector3(target.targetObject.position.x,target.targetObject.position.y+20,target.targetObject.position.z) );
 };
