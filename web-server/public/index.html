@@ -324,7 +324,7 @@ gl_FragColor = vec4(tcolor, tcolor, tcolor, 1.0) *(water + sandy + grass + rocky
             }
 
             function start() {
-
+                $('.dg').hide()
                 blendMesh.scale.x=0.1
                 blendMesh.scale.y=0.1
                 blendMesh.scale.z=0.1
@@ -690,7 +690,7 @@ loader.load("medieval-house-2.json",function ( obj ) {
             hcx = Math.floor(house.position.x / 1000);
             hcz = Math.floor(house.position.z / 1000);
 house.position.y = THREEx.Terrain.planeToHeightMapCoords(MAP[hcx][hcz], MAPMESHES[hcx][hcz],hhcx, hhcz) + 10
-            house.children[38].visible=false
+  //          house.children[38].visible=false
 
 });
 
@@ -931,6 +931,8 @@ if (moveForward || moveBackward || moveLeft || moveRight  )
                 if (moveForward) velocity.z -= 40.0 * delta * 30;
                 if (moveBackward) velocity.z += 40.0 * delta * 30;
 
+ if (blendMesh.position.y < -210) velocity.z /=2 
+
             //    if (moveLeft) velocity.x -= 20.0 * delta * 15;
             //    if (moveRight) velocity.x += 20.0 * delta * 15;
 
@@ -1043,13 +1045,13 @@ if (moveForward || moveBackward || moveLeft || moveRight  )
             }
             if (blendMesh.position.x < 1 + 1 || blendMesh.position.z < 1 + 1
             )
-                blendMesh.position.y = -200
+                blendMesh.position.y = -216.4
             else {
 
            
 
                 if (ld == true) blendMesh.position.y = THREEx.Terrain.planeToHeightMapCoords(MAP[tcx][tcz], MAPMESHES[tcx][tcz], cx, cz) 
-                if (blendMesh.position.y < -200) blendMesh.position.y = -200
+                if (blendMesh.position.y < -216.4) blendMesh.position.y = -216.4
             }
 
             mirrorMesh.position.x = blendMesh.position.x;
