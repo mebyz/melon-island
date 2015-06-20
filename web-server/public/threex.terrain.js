@@ -132,6 +132,7 @@ THREEx.Terrain.heightMapToPlaneGeometry	= function(heightMap,i,j,p,p2,p3,p4,pt){
 				p.push(n);
 			else
 				posgrass.push(n);
+				
 			}
 			if (r>=3 && r<9 && vertex.z*10 >  -150 ){
 				if (p2!=undefined)

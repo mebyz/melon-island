@@ -1,4 +1,6 @@
+game-server/logs/*
 .DS_Store
+*/.DS_Store
 .project
 */node-log.log
 logs/*.log

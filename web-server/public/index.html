@@ -55,7 +55,7 @@ var bly=0
 <script src="Sky.js"></script>
 <script src="WaterShader.js"></script>
 <script src="Particles.js"></script>
-<script src="nature.js"></script>
+<!--<script src="nature.js"></script>-->
 
 <script src="BlendCharacter.js"></script>
 <script src="BlendCharacterGui.js"></script>
@@ -469,10 +469,13 @@ settings = {
         var distance = 400000;
         var nature_models = [];
         var i = 0;
+//        console.log(nature_)
+        var n =[{"obj":"models/trees/f_pinetree1/obj__pinet1.obj","png":"models/trees/f_pinetree1/pinet1.png"}]
 
-        for (var index in nature_) {
-            var fobj = '../' + nature_[index].obj;
-            var ftext = '/' + nature_[index].png;
+        for (var index in n) {
+            var fobj = '../' + n[index].obj;
+            var ftext = '/' + n[index].png;
+            console.log(ftext);
             loadTree(ftext, fobj, i++);
         }
 
@@ -671,7 +674,7 @@ running=false
         setTimeout( function() {
 
 
-var loader = new THREE.ObjectLoader();
+/*var loader = new THREE.ObjectLoader();
 loader.load("medieval-house-2.json",function ( obj ) {
   scene.add( obj );
   house=obj
@@ -694,7 +697,7 @@ house.position.y = THREEx.Terrain.planeToHeightMapCoords(MAP[hcx][hcz], MAPMESHE
 
 });
 
-
+*/
 
         },5000)
 
@@ -758,7 +761,7 @@ house.position.y = THREEx.Terrain.planeToHeightMapCoords(MAP[hcx][hcz], MAPMESHE
 
         scene.add(mirrorMesh);
 
-        var worker = new Worker('/worker.js');
+//        var worker = new Worker('/worker.js');
         
         function addTile(x, y, no) {
 
@@ -788,7 +791,7 @@ house.position.y = THREEx.Terrain.planeToHeightMapCoords(MAP[hcx][hcz], MAPMESHE
                 MAPTREES[x][y] = [];
 
                 for (var i = 0; i < pt.length; i++) {
-                    var r = i * x * y % 68; //Math.round(Math.random()*68)
+                    var r = 0// i * x * y % nature_models.length; //Math.round(Math.random()*68)
                     if (nature_models[r] != undefined) {
                         var child = nature_models[r].clone();
                         child.name = "nature_" + i;
@@ -887,10 +890,10 @@ house.position.y = THREEx.Terrain.planeToHeightMapCoords(MAP[hcx][hcz], MAPMESHE
                 //heightMap = null//THREEx.Terrain.allocateHeightMap(64, 64)
                 //THREEx.Terrain.simplexHeightMap(heightMap,63*x,63*y)
 
-                worker.postMessage({
-                    x: x,
-                    y: y //,geo:geo,heightMap:heightMap
-                });
+                //worker.postMessage({
+                //    x: x,
+                //    y: y //,geo:geo,heightMap:heightMap
+                //});
 
                 MAP[x][y] = 1;
                 MAPMESHES[x][y] = 1;
