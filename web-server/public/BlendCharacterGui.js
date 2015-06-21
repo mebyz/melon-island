@@ -14,7 +14,7 @@ function BlendCharacterGui(animations) {
 		"Step Size": 0.016,
 		"Crossfade Time": 3.5,
 		"idle": 0.33,
-		"walk": 0.33,
+		//"walk": 0.33,
 		"run": 0.33
 
 	};
@@ -42,7 +42,7 @@ function BlendCharacterGui(animations) {
 	this.update = function() {
 
 		controls[ 'idle'] = animations[ 'idle' ].weight;
-		controls[ 'walk'] = animations[ 'walk' ].weight;
+//		controls[ 'walk'] = animations[ 'walk' ].weight;
 		controls[ 'run'] = animations[ 'run' ].weight;
 
 	};
@@ -66,12 +66,12 @@ function BlendCharacterGui(animations) {
 		playback.add( controls, "start" );
 		playback.add( controls, "pause" );
 		playback.add( controls, "step" );
-		playback.add( controls, "idle to walk" );
-		playback.add( controls, "walk to run" );
-		playback.add( controls, "warp walk to run" );
+//		playback.add( controls, "idle to walk" );
+//		playback.add( controls, "walk to run" );
+//		playback.add( controls, "warp walk to run" );
 
 		blending.add( controls, "idle", 0, 1, 0.01).listen().onChange( controls.weight );
-		blending.add( controls, "walk", 0, 1, 0.01).listen().onChange( controls.weight );
+//		blending.add( controls, "walk", 0, 1, 0.01).listen().onChange( controls.weight );
 		blending.add( controls, "run", 0, 1, 0.01).listen().onChange( controls.weight );
 
 		settings.open();
@@ -86,10 +86,10 @@ function BlendCharacterGui(animations) {
 
 			detail: {
 
-				anims: [ "idle", "walk", "run" ],
+				anims: [ "idle", "run" ],
 
 				weights: [ controls['idle'],
-						   controls['walk'],
+//						   controls['walk'],
 						   controls['run'] ]
 			}
 
@@ -127,9 +127,9 @@ function BlendCharacterGui(animations) {
 	controls.weight = function() {
 
 		// renormalize
-		var sum = controls['idle'] + controls['walk'] + controls['run'];
+		var sum = controls['idle'] + controls['run'];
 		controls['idle'] /= sum;
-		controls['walk'] /= sum;
+//		controls['walk'] /= sum;
 		controls['run'] /= sum;
 
 		var weightEvent = new CustomEvent( 'weight-animation', getAnimationData() );
@@ -149,30 +149,30 @@ function BlendCharacterGui(animations) {
 	controls.warp = function( from, to ) {
 
 		var warpData = getAnimationData();
-		warpData.detail.from = 'walk';
+//		warpData.detail.from = 'walk';
 		warpData.detail.to = 'run';
 		warpData.detail.time = controls[ "Crossfade Time" ];
 
 		window.dispatchEvent( new CustomEvent( 'warp', warpData ) );
 	}
 
-	controls['idle to walk'] = function() {
+//	controls['idle to walk'] = function() {
 
-		controls.crossfade( 'idle', 'walk' );
+//		controls.crossfade( 'idle', 'walk' );
 
-	};
+//	};
 
-	controls['walk to run'] = function() {
+//	controls['walk to run'] = function() {
 
-		controls.crossfade( 'walk', 'run' );
+//		controls.crossfade( 'walk', 'run' );
 
-	};
+//	};
 
-	controls['warp walk to run'] = function() {
+//	controls['warp walk to run'] = function() {
 
-		controls.warp( 'walk', 'run' );
+//		controls.warp( 'walk', 'run' );
 
-	};
+//	};
 
 	controls.lockCameraChanged = function() {
 

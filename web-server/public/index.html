@@ -145,12 +145,13 @@ gl_FragColor = vec4(tcolor, tcolor, tcolor, 1.0) *(water + sandy + grass + rocky
 </script>
  </head>
     
-    <body>
+    <body style="overflow: hidden;background:black;">
+        <script src="texgen.js"></script>
     <div class="container">
   <div id="cloud-intro" class="wind">
       
         <div id="app">
-            <div id="loginView">
+            <div id="loginView"  style="display:none;">
                 <div id="loginTitle">
                     MelonIsland
                 </div>
@@ -167,21 +168,25 @@ gl_FragColor = vec4(tcolor, tcolor, tcolor, 1.0) *(water + sandy + grass + rocky
                         </td>
                         <tr>
                             <td>
-                                <input id="login" type='button' value="join" />
+                                <span id="loading" style="display:none;">Connecting to game server ...</span>
+                                <br/>
+                                <input id="login" type='button' class="button" value="Join game !" />
                             </td>
                         </tr>
                 </table>
                 <div id="loginError">
                 </div>
 
+<canvas id="canvas1" width="256" height="256" style="position:absolute;left:5000px;"></canvas>
+<canvas id="canvas2" width="256" height="256" style="position:absolute;left:5000px;"></canvas>
                 <span style="position:absolute;bottom:0px;left:0px;width:100%;"><center>&lt;/&gt; with &#10084; by emmanuel.botros@gmail.com</center></span>
             </div>
             <div id="chatHistory" style="position:absolute;">
 
             </div>
-<div id="3d" style="width:100%;height:100%;"></div>
-    <div id="pos" style="position:absolute;top:0px;left:0px;color:white;">test</div>
-    <div id="pos2" style="position:absolute;top:20px;left:0px;color:white;">test</div>
+<div id="3d" style="width:100%;height:100%;display:none;"></div>
+    <div id="pos" style="position:absolute;top:0px;left:0px;color:white;"></div>
+    <div id="pos2" style="position:absolute;top:20px;left:0px;color:white;"></div>
 
                   <div id="blocker"></div>
     <div id="instructions"></div>
@@ -338,7 +343,7 @@ gl_FragColor = vec4(tcolor, tcolor, tcolor, 1.0) *(water + sandy + grass + rocky
                 scene.add( blendMesh );
 
                 blendMesh.animations[ 'idle' ].weight = 1;
-                blendMesh.animations[ 'walk' ].weight = 0;
+//                blendMesh.animations[ 'walk' ].weight = 0;
                 blendMesh.animations[ 'run' ].weight = 1;
 
                 gui = new BlendCharacterGui(blendMesh.animations);
@@ -513,14 +518,51 @@ settings = {
         var oceanTexture = new loadImage('dirt-512.jpg');
         oceanTexture.wrapS = oceanTexture.wrapT = THREE.RepeatWrapping;
 
-        var sandyTexture = new loadImage('sand-512.jpg');
-        sandyTexture.wrapS = sandyTexture.wrapT = THREE.RepeatWrapping;
+ch = new Chromanin(256,'canvas2');
+ ch.initlayers(256,256); 
+ ch.perlinNoise(0,128,185107136,256,140,1,false);  
+ ch.colorLayer(3,146,85,24);
+  ch.addLayers(0,4,4,1,1); 
+  ch.addLayers(4,2,4,0.600000023841858,1); 
+  ch.addLayers(4,3,4,1,1); ch.writeCanvas();
 
-        var grassTexture = new loadImage('grass-512.jpg');
-        grassTexture.wrapS = grassTexture.wrapT = THREE.RepeatWrapping;
+ch = new Chromanin(256,'canvas1');
+ch.initlayers(256,256); 
+ch.perlinNoise(0,128,9876543,256,150,8,true); 
+ch.noiseDistort(0,0,1234567,3); ch.embossLayer(0,0); 
+ch.perlinNoise(1,128,885870016,256,118,8,true); 
+ch.scaleLayerRGB(1,1,0.5,0.6,0); 
+ch.dilateLayer(1,1); 
+ch.dilateLayer(1,1); 
+ch.dilateLayer(1,1); 
+ch.dilateLayer(1,1); 
+ch.dilateLayer(1,1); 
+ch.motionBlur(1,1,58); 
+ch.perlinNoise(2,128,6666666,256,130,8,false); 
+ch.embossLayer(2,2); 
+ch.sculptureLayer(2,2); 
+ch.mulLayers(0,1,4,1,1); 
+ch.addLayers(4,2,4,1,0.0700000002980232); 
+ch.writeCanvas();
 
-        var rockyTexture = new loadImage('rock-512.jpg');
-        rockyTexture.wrapS = rockyTexture.wrapT = THREE.RepeatWrapping;
+        var sandyTexture = new THREE.Texture(canvas2) 
+        sandyTexture.needsUpdate = true;
+//sandyTexture.wrapS = sandyTexture.wrapT = THREE.RepeatWrapping;
+//        var sandyTexture = new loadImage('sand-512.jpg');
+//        sandyTexture.wrapS = sandyTexture.wrapT = THREE.RepeatWrapping;
+
+//        var grassTexture = new loadImage('grass-512.jpg');
+//        grassTexture.wrapS = grassTexture.wrapT = THREE.RepeatWrapping;
+        var grassTexture = new THREE.Texture(canvas1) 
+        grassTexture.needsUpdate = true;
+grassTexture.wrapS = grassTexture.wrapT = THREE.RepeatWrapping;
+
+        var rockyTexture = new THREE.Texture(canvas2) 
+        rockyTexture.needsUpdate = true;
+rockyTexture.wrapS = rockyTexture.wrapT = THREE.RepeatWrapping;
+
+//        var rockyTexture = new loadImage('rock-512.jpg');
+//        rockyTexture.wrapS = rockyTexture.wrapT = THREE.RepeatWrapping;
 
         var snowyTexture = new loadImage('snow-512.jpg');
         snowyTexture.wrapS = snowyTexture.wrapT = THREE.RepeatWrapping;
@@ -565,7 +607,7 @@ settings = {
                 case 38: // up
                 case 87: // w
                 blendMesh.animations[ 'idle' ].weight = 0;
-                blendMesh.animations[ 'walk' ].weight = 0;
+//                blendMesh.animations[ 'walk' ].weight = 0;
                 blendMesh.animations[ 'run' ].weight = 1;
 
 if (running ==false) {
@@ -584,7 +626,7 @@ running=true;
                 case 83: // s
 
                 blendMesh.animations[ 'idle' ].weight = 0;
-                blendMesh.animations[ 'walk' ].weight = 0;
+//                blendMesh.animations[ 'walk' ].weight = 0;
                 blendMesh.animations[ 'run' ].weight = 1;
 if (running ==false) {
                 blendMesh.play("run", blendMesh.animations[ 'run' ].weight);
@@ -616,7 +658,7 @@ running=true;
                 case 87: // w
 
                 blendMesh.animations[ 'idle' ].weight = 1;
-                blendMesh.animations[ 'walk' ].weight = 0;
+//                blendMesh.animations[ 'walk' ].weight = 0;
                 blendMesh.animations[ 'run' ].weight = 0;
                 blendMesh.play("idle", blendMesh.animations[ 'idle' ].weight);
 running=false
@@ -633,7 +675,7 @@ running=false
 
 
                 blendMesh.animations[ 'idle' ].weight = 1;
-                blendMesh.animations[ 'walk' ].weight = 0;
+//                blendMesh.animations[ 'walk' ].weight = 0;
                 blendMesh.animations[ 'run' ].weight = 0;
                 blendMesh.play("idle", blendMesh.animations[ 'idle' ].weight);
                 running=false
@@ -671,55 +713,15 @@ running=false
             }, 5000)
            
         initSky();
-        setTimeout( function() {
-
-
-/*var loader = new THREE.ObjectLoader();
-loader.load("medieval-house-2.json",function ( obj ) {
-  scene.add( obj );
-  house=obj
-  house.scale.x=30
-  house.scale.y=30
-  house.scale.z=30
-
-  house.position.x=9300
-  house.position.z=10250
-  house.position.y=-180
- hhcx = house.position.x % 1000;
-            hhcz = house.position.z % 1000;
-
-
-
-            hcx = Math.floor(house.position.x / 1000);
-            hcz = Math.floor(house.position.z / 1000);
-house.position.y = THREEx.Terrain.planeToHeightMapCoords(MAP[hcx][hcz], MAPMESHES[hcx][hcz],hhcx, hhcz) + 10
-  //          house.children[38].visible=false
-
-});
-
-*/
-
-        },5000)
+    
 
 // listen for messages from the gui
-                window.addEventListener( 'start-animation', onStartAnimation );
-                window.addEventListener( 'stop-animation', onStopAnimation );
-                window.addEventListener( 'pause-animation', onPauseAnimation );
-                window.addEventListener( 'step-animation', onStepAnimation );
-                window.addEventListener( 'weight-animation', onWeightAnimation );
-                window.addEventListener( 'crossfade', onCrossfade );
-                window.addEventListener( 'warp', onWarp );
-                window.addEventListener( 'toggle-lock-camera', onLockCameraToggle );
-                window.addEventListener( 'toggle-show-skeleton', onShowSkeleton );
-                window.addEventListener( 'toggle-show-model', onShowModel );
-
-                blendMesh = new THREE.BlendCharacter();
-                blendMesh.load( "marine_anims.js", start );
+              
                
 
         var parameters = {
-            width: 10000,
-            height: 10000,
+            width: 1000,
+            height: 1000,
             widthSegments: 500,
             heightSegments: 500,
             depth: 1500,
@@ -956,7 +958,7 @@ if (moveForward || moveBackward || moveLeft || moveRight  )
 
             }
             
-            if ( blendMesh.position != undefined ) {
+            if (blendMesh && blendMesh.position != undefined ) {
             cx = blendMesh.position.x % 1000;
             cz = blendMesh.position.z % 1000;
 
@@ -1059,7 +1061,7 @@ if (moveForward || moveBackward || moveLeft || moveRight  )
 
             mirrorMesh.position.x = blendMesh.position.x;
             mirrorMesh.position.z = blendMesh.position.z;
-            $('#pos').html(Math.round(blendMesh.position.x) + ' ' + Math.round(blendMesh.position.y) + ' ' + Math.round(blendMesh.position.z))
+//            $('#pos').html(Math.round(blendMesh.position.x) + ' ' + Math.round(blendMesh.position.y) + ' ' + Math.round(blendMesh.position.z))
 
 
 }
@@ -1106,7 +1108,7 @@ if (gui != undefined) {
   rY=event.movementX/500
   rX=-event.clientY/30+20
 
-    if (blendMesh.position !=undefined) {
+    if (blendMesh && blendMesh.position !=undefined) {
           
     //$('#pos2').html(rX)
       blendMesh.rotation.y -= Math.PI * rY

@@ -78,7 +78,7 @@ function addMessage(from, target, text, time) {
 
 	}
 	else {
-		var content = '<tr style="     font-size: 30px; -webkit-text-stroke: 2px blue;  color: lightblue;font-weight:bold;">' + '  <td class="date">' + util.timeString(time) + '</td>' + '  <td class="nick">' + util.toStaticHTML(from) + ' says to ' + name + ': ' + '</td>' + '  <td class="msg-text">' + text + '</td>' + '</tr>';
+		var content = '<tr style="     font-size: 30px;  color: red;font-weight:bold;">' + '  <td class="date">' + util.timeString(time) + '</td>' + '  <td class="nick">' + util.toStaticHTML(from) + ' says to ' + name + ': ' + '</td>' + '  <td class="msg-text">' + text + '</td>' + '</tr>';
 	}
 	if (content!='') {
 		messageElement.html(content);
@@ -170,9 +170,11 @@ function showLogin() {
 
 // show chat panel
 function showChat() {
-	$("#loginView").hide();
+
+
+	$("#loginView").fadeOut(1000);
 	$("#loginError").hide();
-	$("#toolbar").show();
+	$("#toolbar").fadeIn(1000);
 	$("entry").focus();
 	scrollDown(base);
 			setInterval(function(){
@@ -269,7 +271,7 @@ $(document).ready(function() {
                 nm.rotation.y=t[4]
                 nm.rotation.z=t[5]
 
-    $('#pos2').html(nm.position)
+    //$('#pos2').html(nm.position)
 
 		              }
 		            }
@@ -312,6 +314,7 @@ $(document).ready(function() {
 			showError(NAME_ERROR);
 			return false;
 		}
+		$("#loading").show();
 
 		//query entry of connection
 		queryEntry(username, function(host, port) {
@@ -325,16 +328,37 @@ $(document).ready(function() {
 					username: username,
 					rid: rid
 				}, function(data) {
+
 					if(data.error) {
 						showError(DUPLICATE_ERROR);
 						return;
 					}
-					setName();
+					$("#loading").html("connected ! .. preparing game ..");
+
+					    setTimeout( function() {
+
+  window.addEventListener( 'start-animation', onStartAnimation );
+                window.addEventListener( 'stop-animation', onStopAnimation );
+                window.addEventListener( 'pause-animation', onPauseAnimation );
+                window.addEventListener( 'step-animation', onStepAnimation );
+                window.addEventListener( 'weight-animation', onWeightAnimation );
+                window.addEventListener( 'crossfade', onCrossfade );
+                window.addEventListener( 'warp', onWarp );
+                window.addEventListener( 'toggle-lock-camera', onLockCameraToggle );
+                window.addEventListener( 'toggle-show-skeleton', onShowSkeleton );
+                window.addEventListener( 'toggle-show-model', onShowModel );
+
+                blendMesh = new THREE.BlendCharacter();
+                blendMesh.load( "marine_anims.js", start );
+                	setName();
 					setRoom();
 					showChat();
 					//$(".container").hide();
 					initUserList(data);
 					$("#chatHistory").show();
+					$("#3d").fadeIn(5000);
+
+        },5000);
 			
 				});
 			});
