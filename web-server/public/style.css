@@ -9,7 +9,7 @@ html, body, .container{
 #cloud-intro{
   position: relative;
   height: 100%;
-  background: url(http://static.radulescu.me/examples/clouds/clouds1000.png);
+/*  background: url(http://static.radulescu.me/examples/clouds/clouds1000.png);
   background: url(http://static.radulescu.me/examples/clouds/clouds1000.png) 0 200px,
               url(http://static.radulescu.me/examples/clouds/clouds1200_1.png) 0 300px,
               url(http://static.radulescu.me/examples/clouds/clouds1000_blur3.png) 100px 250px;
@@ -23,7 +23,7 @@ html, body, .container{
   100% {
     background-position: 1000px 200px, 1200px 300px, 1100px 250px;
   }
-
+*/
 }
 @-webkit-keyframes wind{
   0% {

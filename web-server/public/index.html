@@ -179,6 +179,9 @@ gl_FragColor = vec4(tcolor, tcolor, tcolor, 1.0) *(water + sandy + grass + rocky
 
 <canvas id="canvas1" width="256" height="256" style="position:absolute;left:5000px;"></canvas>
 <canvas id="canvas2" width="256" height="256" style="position:absolute;left:5000px;"></canvas>
+<canvas id="canvas3" width="256" height="256" style="position:absolute;left:5000px;"></canvas>
+<canvas id="canvas4" width="256" height="256" style="position:absolute;left:5000px;"></canvas>
+<canvas id="canvas5" width="256" height="256" style="position:absolute;left:5000px;"></canvas>
                 <span style="position:absolute;bottom:0px;left:0px;width:100%;"><center>&lt;/&gt; with &#10084; by emmanuel.botros@gmail.com</center></span>
             </div>
             <div id="chatHistory" style="position:absolute;">
@@ -515,35 +518,43 @@ settings = {
         }
 
 
-        var oceanTexture = new loadImage('dirt-512.jpg');
-        oceanTexture.wrapS = oceanTexture.wrapT = THREE.RepeatWrapping;
+ch = new Chromanin(256,'canvas3');
+ch.initlayers(256,256); 
+ ch.perlinNoise(0,32,185107136,256,10,1,false);  
+ ch.colorLayer(3,155,155,155);
+ ch.perlinNoise(0,128,9876543,256,150,8,true); 
+ ch.noiseDistort(0,0,1234567,1);
+  ch.embossLayer(0,0); 
+  ch.addLayers(0,4,4,1,1); 
+  ch.addLayers(4,2,4,0.600000023841858,1); 
+  ch.addLayers(4,3,4,1,1); ch.writeCanvas();
+
+        var oceanTexture = new THREE.Texture(canvas1) 
+        oceanTexture.needsUpdate = true;
+oceanTexture.wrapS = oceanTexture.wrapT = THREE.RepeatWrapping;
+
 
 ch = new Chromanin(256,'canvas2');
- ch.initlayers(256,256); 
- ch.perlinNoise(0,128,185107136,256,140,1,false);  
+ch.initlayers(256,256); 
+ ch.perlinNoise(0,32,185107136,256,10,1,false);  
  ch.colorLayer(3,146,85,24);
+ ch.perlinNoise(0,128,9876543,256,150,8,true); 
+ ch.noiseDistort(0,0,1234567,1);
+  ch.embossLayer(0,0); 
   ch.addLayers(0,4,4,1,1); 
   ch.addLayers(4,2,4,0.600000023841858,1); 
   ch.addLayers(4,3,4,1,1); ch.writeCanvas();
 
 ch = new Chromanin(256,'canvas1');
 ch.initlayers(256,256); 
-ch.perlinNoise(0,128,9876543,256,150,8,true); 
-ch.noiseDistort(0,0,1234567,3); ch.embossLayer(0,0); 
-ch.perlinNoise(1,128,885870016,256,118,8,true); 
-ch.scaleLayerRGB(1,1,0.5,0.6,0); 
-ch.dilateLayer(1,1); 
-ch.dilateLayer(1,1); 
-ch.dilateLayer(1,1); 
-ch.dilateLayer(1,1); 
-ch.dilateLayer(1,1); 
-ch.motionBlur(1,1,58); 
-ch.perlinNoise(2,128,6666666,256,130,8,false); 
-ch.embossLayer(2,2); 
-ch.sculptureLayer(2,2); 
-ch.mulLayers(0,1,4,1,1); 
-ch.addLayers(4,2,4,1,0.0700000002980232); 
-ch.writeCanvas();
+ ch.perlinNoise(0,32,185107136,256,10,1,false);  
+ ch.colorLayer(3,40,85,2);
+ ch.perlinNoise(0,128,9876543,256,150,8,true); 
+ ch.noiseDistort(0,0,1234567,1);
+  ch.embossLayer(0,0); 
+  ch.addLayers(0,4,4,1,1); 
+  ch.addLayers(4,2,4,0.600000023841858,1); 
+  ch.addLayers(4,3,4,1,1); ch.writeCanvas();
 
         var sandyTexture = new THREE.Texture(canvas2) 
         sandyTexture.needsUpdate = true;
@@ -564,8 +575,25 @@ rockyTexture.wrapS = rockyTexture.wrapT = THREE.RepeatWrapping;
 //        var rockyTexture = new loadImage('rock-512.jpg');
 //        rockyTexture.wrapS = rockyTexture.wrapT = THREE.RepeatWrapping;
 
-        var snowyTexture = new loadImage('snow-512.jpg');
-        snowyTexture.wrapS = snowyTexture.wrapT = THREE.RepeatWrapping;
+ch = new Chromanin(256,'canvas4');
+ch.initlayers(256,256); 
+ ch.perlinNoise(0,32,185107136,256,10,1,false);  
+ ch.colorLayer(3,255,255,255);
+ ch.perlinNoise(0,128,9876543,256,150,8,true); 
+ ch.noiseDistort(0,0,1234567,1);
+  ch.embossLayer(0,0); 
+  ch.addLayers(0,4,4,1,1); 
+  ch.addLayers(4,2,4,0.600000023841858,1); 
+  ch.addLayers(4,3,4,1,1); ch.writeCanvas();
+
+//        var oceanTexture = new loadImage('dirt-512.jpg');
+//        oceanTexture.wrapS = oceanTexture.wrapT = THREE.RepeatWrapping;
+        var snowyTexture = new THREE.Texture(canvas1) 
+        snowyTexture.needsUpdate = true;
+snowyTexture.wrapS = snowyTexture.wrapT = THREE.RepeatWrapping;
+
+//        var snowyTexture = new loadImage('snow-512.jpg');
+//        snowyTexture.wrapS = snowyTexture.wrapT = THREE.RepeatWrapping;
 
 
         var TILES = 2
@@ -606,6 +634,7 @@ rockyTexture.wrapS = rockyTexture.wrapT = THREE.RepeatWrapping;
 
                 case 38: // up
                 case 87: // w
+                if (blendMesh) {
                 blendMesh.animations[ 'idle' ].weight = 0;
 //                blendMesh.animations[ 'walk' ].weight = 0;
                 blendMesh.animations[ 'run' ].weight = 1;
@@ -613,7 +642,7 @@ rockyTexture.wrapS = rockyTexture.wrapT = THREE.RepeatWrapping;
 if (running ==false) {
                 blendMesh.play("run", blendMesh.animations[ 'run' ].weight);
 running=true;
-            }
+            }}
                     moveForward = true;
                     break;
 
@@ -624,7 +653,7 @@ running=true;
 
                 case 40: // down
                 case 83: // s
-
+if (blendMesh) {
                 blendMesh.animations[ 'idle' ].weight = 0;
 //                blendMesh.animations[ 'walk' ].weight = 0;
                 blendMesh.animations[ 'run' ].weight = 1;
@@ -632,7 +661,7 @@ if (running ==false) {
                 blendMesh.play("run", blendMesh.animations[ 'run' ].weight);
 running=true;
             }
-
+}
                     moveBackward = true;
                     break;
 
@@ -656,12 +685,12 @@ running=true;
 
                 case 38: // up
                 case 87: // w
-
+if (blendMesh) {
                 blendMesh.animations[ 'idle' ].weight = 1;
 //                blendMesh.animations[ 'walk' ].weight = 0;
                 blendMesh.animations[ 'run' ].weight = 0;
                 blendMesh.play("idle", blendMesh.animations[ 'idle' ].weight);
-running=false
+running=false}
                     moveForward = false;
                     break;
 
@@ -673,12 +702,13 @@ running=false
                 case 40: // down
                 case 83: // s
 
-
+if (blendMesh) {
                 blendMesh.animations[ 'idle' ].weight = 1;
 //                blendMesh.animations[ 'walk' ].weight = 0;
                 blendMesh.animations[ 'run' ].weight = 0;
                 blendMesh.play("idle", blendMesh.animations[ 'idle' ].weight);
                 running=false
+            } 
 
                     moveBackward = false;
                     break;
@@ -731,10 +761,23 @@ running=false
 
         var waterNormals;
 
+ch = new Chromanin(256,'canvas5');
+ch.initlayers(256,256); 
+ ch.perlinNoise(0,32,185107136,256,10,1,false);  
+ ch.colorLayer(3,255,255,255);
+ ch.perlinNoise(0,128,9876543,256,150,8,true); 
+ ch.noiseDistort(0,0,1234567,1);
+  ch.embossLayer(0,0); 
+  ch.addLayers(0,4,4,1,1); 
+  ch.addLayers(4,2,4,0.600000023841858,1); 
+  ch.addLayers(4,3,4,1,1); ch.writeCanvas();
 
 
-        waterNormals = new THREE.ImageUtils.loadTexture('images/waternormals.jpg');
-        waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;
+        var waterNormals = new THREE.Texture(canvas5) 
+        waterNormals.needsUpdate = true;
+waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;
+    //    waterNormals = new THREE.ImageUtils.loadTexture('images/waternormals.jpg');
+    //    waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;
 
         water = new THREE.Water(renderer, camera, scene, {
             textureWidth: 512,
@@ -780,13 +823,13 @@ running=false
                 gp = new THREEx.createGrassTufts(p, 'images/grass01.png')
                 scene.add(gp)
                 MAPGRASS[x][y] = gp
-                gp = new THREEx.createGrassTufts(p2, 'images/grass02.png')
+                gp = new THREEx.createGrassTufts(p2, 'images/grass01.png')
                 scene.add(gp)
                 MAPGRASS2[x][y] = gp
-                gp = new THREEx.createGrassTufts(p3, 'images/flowers01.png')
+                gp = new THREEx.createGrassTufts(p3, 'images/grass01.png')
                 scene.add(gp)
                 MAPGRASS3[x][y] = gp
-                gp = new THREEx.createGrassTufts(p4, 'images/flowers02.png')
+                gp = new THREEx.createGrassTufts(p4, 'images/grass01.png')
                 scene.add(gp)
                 MAPGRASS4[x][y] = gp
 
@@ -926,7 +969,7 @@ z=zt
                 sky.uniforms.sunPosition.value.copy(sunSphere.position);
         
 if (moveForward || moveBackward || moveLeft || moveRight  )
-            if (blendMesh.position != undefined) {
+            if ( blendMesh && blendMesh.position != undefined) {
       
                 velocity.x -= velocity.x * 10.0 * delta;
                 velocity.z -= velocity.z * 10.0 * delta;

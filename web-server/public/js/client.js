@@ -178,7 +178,7 @@ function showChat() {
 	$("entry").focus();
 	scrollDown(base);
 			setInterval(function(){
-if (playerpos[username] != blendMesh.position.x+','+blendMesh.position.y+','+blendMesh.position.z+','+blendMesh.rotation.x+','+blendMesh.rotation.y+','+blendMesh.rotation.z)
+if ( blendMesh.position && playerpos[username] != blendMesh.position.x+','+blendMesh.position.y+','+blendMesh.position.z+','+blendMesh.rotation.x+','+blendMesh.rotation.y+','+blendMesh.rotation.z)
 					{
 		var route = "chat.chatHandler.send";
 pomelo.request(route, {
