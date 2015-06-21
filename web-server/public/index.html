@@ -145,7 +145,7 @@ gl_FragColor = vec4(tcolor, tcolor, tcolor, 1.0) *(water + sandy + grass + rocky
 </script>
  </head>
     
-    <body style="overflow: hidden;background:black;">
+    <body style="overflow: hidden;background:black;font-family: Verdana,Geneva,sans-serif; ">
         <script src="texgen.js"></script>
     <div class="container">
   <div id="cloud-intro" class="wind">
@@ -444,6 +444,7 @@ settings = {
             gui2.add(effectController, "sun").onChange(guiChanged);
 
             guiChanged();
+            $(".dg").hide()
             //camera.lookAt(sunSphere.position)
 
 
@@ -557,6 +558,7 @@ ch.initlayers(256,256);
   ch.addLayers(4,3,4,1,1); ch.writeCanvas();
 
         var sandyTexture = new THREE.Texture(canvas2) 
+sandyTexture.wrapS = sandyTexture.wrapT = THREE.RepeatWrapping;
         sandyTexture.needsUpdate = true;
 //sandyTexture.wrapS = sandyTexture.wrapT = THREE.RepeatWrapping;
 //        var sandyTexture = new loadImage('sand-512.jpg');
@@ -728,7 +730,7 @@ if (blendMesh) {
       
         (function() {
            
-            light = new THREE.DirectionalLight('white', 0.75 * 2)
+            light = new THREE.DirectionalLight('white', 0.075 * 2)
             light.position.set(-0.5, -0.5, -2)
             scene.add(light)
             hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, .5);
@@ -750,8 +752,8 @@ if (blendMesh) {
                
 
         var parameters = {
-            width: 1000,
-            height: 1000,
+            width: 10000,
+            height: 10000,
             widthSegments: 500,
             heightSegments: 500,
             depth: 1500,
@@ -761,7 +763,7 @@ if (blendMesh) {
 
         var waterNormals;
 
-ch = new Chromanin(256,'canvas5');
+/*ch = new Chromanin(256,'canvas5');
 ch.initlayers(256,256); 
  ch.perlinNoise(0,32,185107136,256,10,1,false);  
  ch.colorLayer(3,255,255,255);
@@ -775,9 +777,9 @@ ch.initlayers(256,256);
 
         var waterNormals = new THREE.Texture(canvas5) 
         waterNormals.needsUpdate = true;
-waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;
-    //    waterNormals = new THREE.ImageUtils.loadTexture('images/waternormals.jpg');
-    //    waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;
+waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;*/
+        waterNormals = new THREE.ImageUtils.loadTexture('images/waternormals.jpg');
+        waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;
 
         water = new THREE.Water(renderer, camera, scene, {
             textureWidth: 512,
@@ -840,7 +842,7 @@ waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;
                     if (nature_models[r] != undefined) {
                         var child = nature_models[r].clone();
                         child.name = "nature_" + i;
-                        child.position.set(pt[i].x, pt[i].y, pt[i].z);
+                        child.position.set(pt[i].x, pt[i].y-10, pt[i].z);
                         scene.add(child);
                         child.updateMatrixWorld(true);
                         MAPTREES[x][y].push(child);
