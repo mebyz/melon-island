@@ -357,6 +357,26 @@ $(document).ready(function() {
 					initUserList(data);
 					$("#chatHistory").show();
 					$("#3d").fadeIn(5000);
+		var geometry = new THREE.BoxGeometry( 20, 20, 20 );
+
+				var texture = THREE.ImageUtils.loadTexture( 'images/waternormals.jpg' );
+				
+				var material = new THREE.MeshBasicMaterial( { map: texture } );
+
+				cubeMesh = new THREE.Mesh( geometry, material );
+
+                cubeMesh.position.x=10000
+                cubeMesh.position.z=10000
+                cubeMesh.position.y=300
+
+				scene.add( cubeMesh );
+				cubeMesh.p=0;
+				cubeMesh.px=0;
+				cubeMesh.pz=0;
+				cubeMesh.back=false;
+
+				t=findPath(world,[160,160],[172,173]);
+				cubeMesh.path=t//t.reverse().concat(s)
 
         },5000);
 			

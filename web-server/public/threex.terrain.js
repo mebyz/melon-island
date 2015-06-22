@@ -106,7 +106,9 @@ THREEx.Terrain.heightMapToCanvas	= function(heightMap, canvas){
  * @param  {Array} heightMap the heightmap
  * @return {THREE.Geometry}  the just built geometry
  */
-THREEx.Terrain.heightMapToPlaneGeometry	= function(heightMap,i,j,p,p2,p3,p4,pt){
+THREEx.Terrain.heightMapToPlaneGeometry	= function(heightMap,i,j,p,p2,p3,p4,pt,ob){
+              
+
 	// get heightMap dimensions
 	var width	= heightMap.length
 	var depth	= heightMap[0].length
@@ -114,7 +116,11 @@ THREEx.Terrain.heightMapToPlaneGeometry	= function(heightMap,i,j,p,p2,p3,p4,pt){
 	var geometry	= new THREEx.Terrain.PlaneGeometry( 1, 1, width-1, depth-1)
 	// loop on each vertex of the geometry
 	for(var x = 0; x < width; x++){
+		ob[x] = Array()
 		for(var z = 0; z < depth; z++){
+			ob[x][z] = 0;
+
+			//console.log(x+' '+z)
 			// get the height from heightMap
 			var height	= heightMap[x][z]
 			// set the vertex.z to a normalized height
@@ -152,11 +158,16 @@ THREEx.Terrain.heightMapToPlaneGeometry	= function(heightMap,i,j,p,p2,p3,p4,pt){
 			else
 			posgrass4.push(n);
 			}
-				
+//			console.log(ob)
 			if (r==10 && vertex.z*10 >  -150){
 				n.y+=5
-				if (pt!=undefined)
-				pt.push(n);
+				if (pt!=undefined) {
+					ob[x][z]=1;
+					console.log((i*16+x)+' '+(j*16+z))
+					console.log(n)
+
+					pt.push(n);
+				}
 			else
 			postrees.push(n);
 			}
