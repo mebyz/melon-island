@@ -6,6 +6,7 @@ var base = 1000;
 var increase = 25;
 var reg = /^[a-zA-Z0-9_\u4e00-\u9fa5]+$/;
 var LOGIN_ERROR = "There is no server to log in, please wait.";
+var AVATAR_ERROR = "please upload a jpg file";
 var LENGTH_ERROR = "Name/Channel is too long or too short. 20 character max.";
 var NAME_ERROR = "Bad character in Name/Channel. Can only have letters, numbers, Chinese characters, and '_'";
 var DUPLICATE_ERROR = "Please change your name to login.";
@@ -314,6 +315,12 @@ $(document).ready(function() {
 			showError(NAME_ERROR);
 			return false;
 		}
+
+		if ( $("#fu").css('display') != 'none' ){
+    		showError(AVATAR_ERROR);
+			return false;
+			}
+
 		$("#loading").show();
 
 		//query entry of connection
@@ -359,7 +366,12 @@ $(document).ready(function() {
 					$("#3d").fadeIn(5000);
 		var geometry = new THREE.BoxGeometry( 20, 20, 20 );
 
-				var texture = THREE.ImageUtils.loadTexture( 'images/waternormals.jpg' );
+
+
+
+
+
+				var texture = THREE.ImageUtils.loadTexture(mAvatar);
 				
 				var material = new THREE.MeshBasicMaterial( { map: texture } );
 
@@ -370,7 +382,8 @@ $(document).ready(function() {
                 cubeMesh.position.y=300
 
 				scene.add( cubeMesh );
-				setInterval(function(){summon()},5000)
+				cubeMesh.moving=false;
+				//summon()
 
         },5000);
 			
@@ -386,6 +399,7 @@ $(document).ready(function() {
 		if(e.keyCode != 13 /* Return */ ) return;
 		var msg = $("#entry").val().replace("\n", "");
 		if(!util.isBlank(msg)) {
+			if (msg=='BOX') { summon(); return; } 
 			pomelo.request(route, {
 				rid: rid,
 				content: msg,

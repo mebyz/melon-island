@@ -22,6 +22,7 @@
         <script src="js/pop.js">
                 		
         </script>
+        <script src="dropzone.js"></script>
 
 <script type="text/javascript">
 var bly=0
@@ -159,7 +160,8 @@ gl_FragColor = vec4(tcolor, tcolor, tcolor, 1.0) *(water + sandy + grass + rocky
                 <table>
                     <tr>
                         <td>
-                            <input id="loginUser" type="text" placeholder="enter your name" />
+                            <input id="loginUser" type="text" placeholder="enter your name" /> 
+                            <input type="button" value="choose avatar" id="fu"/>
                         </td>
                     </tr>
                     <tr>
@@ -183,6 +185,8 @@ gl_FragColor = vec4(tcolor, tcolor, tcolor, 1.0) *(water + sandy + grass + rocky
 <canvas id="canvas3" width="256" height="256" style="position:absolute;left:5000px;"></canvas>
 <canvas id="canvas4" width="256" height="256" style="position:absolute;left:5000px;"></canvas>
 <canvas id="canvas5" width="256" height="256" style="position:absolute;left:5000px;"></canvas>
+
+
                 <span style="position:absolute;bottom:0px;left:0px;width:100%;"><center>&lt;/&gt; with &#10084; by emmanuel.botros@gmail.com</center></span>
             </div>
             <div id="chatHistory" style="position:absolute;">
@@ -1590,7 +1594,16 @@ var distanceFunction = EuclideanDistance;
         </div>
   </div>
 </div>
-          
+          <script type="text/javascript">
+          var myDropzone = new Dropzone("#fu", { url: "/file-upload"});
+          var mAvatar = '';
+          myDropzone.on("complete", function(file) {
+
+          mAvatar="/uploads/"+file.name;
+   $("#fu").hide().before("<div style='overflow:hidden;'><img id='avatar' style='margin:5px;border:1px dotted black;' width='256' src='/uploads/"+file.name+"'/></div>");
+  }
+);
+</script>
     </body>
 
 </html>
