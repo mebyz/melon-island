@@ -370,13 +370,7 @@ $(document).ready(function() {
                 cubeMesh.position.y=300
 
 				scene.add( cubeMesh );
-				cubeMesh.p=0;
-				cubeMesh.px=0;
-				cubeMesh.pz=0;
-				cubeMesh.back=false;
-
-				t=findPath(world,[160,160],[172,173]);
-				cubeMesh.path=t//t.reverse().concat(s)
+				setInterval(function(){summon()},5000)
 
         },5000);
 			

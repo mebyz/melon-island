@@ -1169,19 +1169,20 @@ if (moveForward || moveBackward || moveLeft || moveRight  )
                 
 //                cubeMesh.position.x+=0.1
 */
-if (cubeMesh.path[cubeMesh.p]) {
+if (cubeMesh && cubeMesh.path && cubeMesh.path[cubeMesh.p]) {
 
 cubeMesh.lookAt(new THREE.Vector3(cubeMesh.path[cubeMesh.p][0]/16*1001,0,cubeMesh.path[cubeMesh.p][1]/16*1001))
 cubeMesh.translateZ(5)
-
+cubeMesh.moving=true;
 cubeMesh.lookAt(new THREE.Vector3(0,0,0))
 
                  if (Math.abs(cubeMesh.position.x-cubeMesh.path[cubeMesh.p][0]/16*1001)<10 && Math.abs(cubeMesh.position.z>=cubeMesh.path[cubeMesh.p][1]/16*1001)<10)
                     cubeMesh.p++;
 
 } else {
+cubeMesh.moving=false;
 // GO BACK
-if (cubeMesh.p == cubeMesh.path.length && cubeMesh.back==false) {
+if (0 && cubeMesh.p == cubeMesh.path.length && cubeMesh.back==false) {
 
     cubeMesh.back=true
                 cubeMesh.p=0;
@@ -1263,6 +1264,16 @@ if (gui != undefined) {
     }
 
   };
+
+function summon(){
+                cubeMesh.p=0;
+                cubeMesh.px=0;
+                cubeMesh.pz=0;
+                cubeMesh.back=true;
+
+                t=findPath(world,[Math.round(cubeMesh.position.x/1001*16),Math.round(cubeMesh.position.z/1001*16)],[Math.round(blendMesh.position.x/1001*16),Math.round(blendMesh.position.z/1001*16)]);
+                cubeMesh.path=t//t.reverse().concat(s)
+            }
 function goto(x,z){
                 cubeMesh.p=0;
                 cubeMesh.px=0;
