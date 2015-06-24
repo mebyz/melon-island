@@ -374,16 +374,36 @@ $(document).ready(function() {
 				var texture = THREE.ImageUtils.loadTexture(mAvatar);
 				
 				var material = new THREE.MeshBasicMaterial( { map: texture } );
-
+/*
 				cubeMesh = new THREE.Mesh( geometry, material );
 
                 cubeMesh.position.x=10000
                 cubeMesh.position.z=10000
                 cubeMesh.position.y=300
 
-				scene.add( cubeMesh );
-				cubeMesh.moving=false;
+				scene.add( cubeMesh );*/
+				loader = new THREE.SEA3D({
+					autoPlay : true
+				});	
+				
+				loader.container = scene;				
+				loader.onComplete = function (e) {
+					cubeMesh=loader.meshes[0] 
+					cubeMesh.play("idle")
+					cubeMesh.position.x=10000
+                	cubeMesh.position.z=10000
+                	cubeMesh.position.y=300
+
+					cubeMesh.scale.x=.2
+					cubeMesh.scale.y=.2
+					cubeMesh.scale.z=.2
+					cubeMesh.moving=false;
+				}
+				loader.load( '/spide.sea' );
+				
 				//summon()
+
+					
 
         },5000);
 			

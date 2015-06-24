@@ -23,7 +23,7 @@
                 		
         </script>
         <script src="dropzone.js"></script>
-
+    
 <script type="text/javascript">
 var bly=0
     loadedplayers = [];
@@ -63,6 +63,7 @@ var bly=0
 <script src="BlendCharacterGui.js"></script>
 <script type="text/javascript" src="OBJLoader.js"></script>
 
+<script src="sea3d.min.js"></script>
    
 <script id="vertexShader" type="x-shader/x-vertex">
 uniform sampler2D bumpTexture;
@@ -652,6 +653,9 @@ snowyTexture.wrapS = snowyTexture.wrapT = THREE.RepeatWrapping;
 
             switch (event.keyCode) {
 
+                case 32: // up
+                    summon()
+                break;
                 case 38: // up
                 case 87: // w
                 if (blendMesh) {
@@ -1175,15 +1179,23 @@ if (moveForward || moveBackward || moveLeft || moveRight  )
 */
 if (cubeMesh && cubeMesh.path && cubeMesh.path[cubeMesh.p]) {
 
-cubeMesh.lookAt(new THREE.Vector3(cubeMesh.path[cubeMesh.p][0]/16*1001,0,cubeMesh.path[cubeMesh.p][1]/16*1001))
-cubeMesh.translateZ(5)
+cubeMesh.lookAt(new THREE.Vector3(cubeMesh.path[cubeMesh.p][0]/16*1001,cubeMesh.position.y,cubeMesh.path[cubeMesh.p][1]/16*1001))
+cubeMesh.translateZ(0.5)
 cubeMesh.moving=true;
-cubeMesh.lookAt(new THREE.Vector3(0,0,0))
 
-                 if (Math.abs(cubeMesh.position.x-cubeMesh.path[cubeMesh.p][0]/16*1001)<10 && Math.abs(cubeMesh.position.z>=cubeMesh.path[cubeMesh.p][1]/16*1001)<10)
+                 if (Math.abs(cubeMesh.position.x-cubeMesh.path[cubeMesh.p][0]/16*1001)<10 && Math.abs(cubeMesh.position.z>=cubeMesh.path[cubeMesh.p][1]/16*1001)<10) {
+                    if (cubeMesh.path[cubeMesh.p+1])
+                        cubeMesh.lookAt(new THREE.Vector3(                        cubeMesh.path[cubeMesh.p+1][0],cubeMesh.position.y, cubeMesh.path[cubeMesh.p+1][1]))
                     cubeMesh.p++;
 
+    cubeMesh.animations["idle"].isPlaying=false;
+                        cubeMesh.play("walk")
+                 } 
+
 } else {
+    cubeMesh.animations["walk"].isPlaying=false;
+cubeMesh.play("idle")
+
 cubeMesh.moving=false;
 // GO BACK
 if (0 && cubeMesh.p == cubeMesh.path.length && cubeMesh.back==false) {
@@ -1270,6 +1282,9 @@ if (gui != undefined) {
   };
 
 function summon(){
+    cubeMesh.animations["idle"].isPlaying=false;
+                cubeMesh.play("walk")
+
                 cubeMesh.p=0;
                 cubeMesh.px=0;
                 cubeMesh.pz=0;
