@@ -1,7 +1,7 @@
 {
     "development":{
         "id":"master-server-1",
-        "host":"macbook-air-de-emmanuel.local",
+        "host":"dev-website.lekiosk.com",
         "port":3005
     },
 

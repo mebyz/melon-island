@@ -25,6 +25,7 @@
         <script src="dropzone.js"></script>
     
 <script type="text/javascript">
+var effect = null;
 var bly=0
     loadedplayers = [];
     loadedplayersTarget = [];
@@ -59,6 +60,8 @@ var bly=0
 <script src="Particles.js"></script>
 <!--<script src="nature.js"></script>-->
 
+  <script src="StereoEffect.js"></script>
+  <script src="DeviceOrientationControls.js"></script>
 <script src="BlendCharacter.js"></script>
 <script src="BlendCharacterGui.js"></script>
 <script type="text/javascript" src="OBJLoader.js"></script>
@@ -636,6 +639,10 @@ snowyTexture.wrapS = snowyTexture.wrapT = THREE.RepeatWrapping;
         });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.getElementById('3d').appendChild(renderer.domElement);
+
+        effect = new THREE.StereoEffect( renderer );
+                effect.eyeSeparation = 10;
+                effect.setSize( window.innerWidth, window.innerHeight );
         var velocity = new THREE.Vector3();
         var onRenderFcts = [];
         var scene = new THREE.Scene();
@@ -1231,7 +1238,8 @@ if (0 && cubeMesh.p == cubeMesh.path.length && cubeMesh.back==false) {
             water.material.uniforms.time.value += 1.0 / 60.0;
 
             water.render();
-            renderer.render(scene, camera);
+
+            effect.render(scene, camera);
         })
         var lastTimeMsec = null
         requestAnimationFrame(function animate(nowMsec) {
@@ -1259,7 +1267,33 @@ if (gui != undefined) {
             }
         })
 
-
+/*
+     if (window.DeviceOrientationEvent) {
+        document.getElementById("doEvent").innerHTML = "DeviceOrientation";
+        // Listen for the deviceorientation event and handle the raw data
+        window.addEventListener('deviceorientation', function(eventData) {
+          // gamma is the left-to-right tilt in degrees, where right is positive
+          var tiltLR = eventData.gamma;
+          
+          // beta is the front-to-back tilt in degrees, where front is positive
+          var tiltFB = eventData.beta;
+          
+          // alpha is the compass direction the device is facing in degrees
+          var dir = eventData.alpha
+          
+          // call our orientation event handler
+          deviceOrientationHandler(tiltLR, tiltFB, dir);
+          }, false);
+      } else {
+        document.getElementById("doEvent").innerHTML = "Not supported on your device or browser.  Sorry."
+      }
+    
+  
+    function deviceOrientationHandler(tiltLR, tiltFB, dir) {
+        settings.cameraPosition.z +=tiltLR;
+        settings.cameraPosition.y +=tiltFB;
+    }
+*/
   var onMouseMove = function ( event ) {
 
     var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
