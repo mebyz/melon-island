@@ -62,7 +62,7 @@ var bly=0
 <script src="Sky.js"></script>
 <script src="WaterShader.js"></script>
 <script src="Particles.js"></script>
-<!--<script src="nature.js"></script>-->
+<script src="nature-full.js"></script>
 
   <script src="StereoEffect.js"></script>
   <script src="DeviceOrientationControls.js"></script>
@@ -149,7 +149,7 @@ void main()
     vec4 snowy = (smoothstep(0.78, 0.82, vAmount) - smoothstep(0.85, 0.90, vAmount))                                   * texture2D( snowyTexture, vUV * 10.0 );
 
     vec4 snowy2 = ( smoothstep(0.85, 0.90, vAmount))                                   * texture2D( snowyTexture, vUV * 20.0 );
-    float tcolor = 0.5;
+    float tcolor = 0.7;
     
 #ifdef USE_FOG
 
@@ -531,7 +531,7 @@ settings = {
         var nature_models = [];
         var i = 0;
 //        console.log(nature_)
-        var n =[{"obj":"models/trees/f_pinetree1/obj__pinet1.obj","png":"models/trees/f_pinetree1/pinet1.png"}]
+        var n =Array(nature_[15],nature_[25]);//[{"obj":"models/trees/f_pinetree1/obj__pinet1.obj","png":"models/trees/f_pinetree1/pinet1.png"}]
 
         for (var index in n) {
             var fobj = '../' + n[index].obj;
@@ -685,7 +685,11 @@ snowyTexture.wrapS = snowyTexture.wrapT = THREE.RepeatWrapping;
         //var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 1000000);
         var camera = new THREE.TargetCamera(45, 667 / 375, 0.01, 1000000);
         scene.add(camera);
-       
+        
+        // RUN !
+        moveForward = true;
+
+
         var onKeyDown = function(event) {
 
             switch (event.keyCode) {
@@ -789,10 +793,10 @@ if (blendMesh) {
       
         (function() {
            
-            light = new THREE.DirectionalLight('white', 0.075 * 2)
+            light = new THREE.DirectionalLight('white', 0.1 * 2)
             light.position.set(-0.5, -0.5, -2)
             scene.add(light)
-            hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, .5);
+            hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, .9);
             scene.add(hemiLight)
 
         })()
@@ -912,7 +916,7 @@ waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;*/
                 MAPTREES[x][y] = [];
 
                 for (var i = 0; i < pt.length; i++) {
-                    var r = 0// i * x * y % nature_models.length; //Math.round(Math.random()*68)
+                    var r = Math.round(Math.random()*nature_models.length);// i * x * y % nature_models.length; //Math.round(Math.random()*68)
                     if (nature_models[r] != undefined) {
                         var child = nature_models[r].clone();
                         child.name = "nature_" + i;
