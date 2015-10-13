@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "85C9036BFE6795F893FE20895B6154B8FF7620AE",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "1D39C5497681ABFBFCE9165E17F98D58CC44A1BD" : 0,
+    "85C9036BFE6795F893FE20895B6154B8FF7620AE" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "0ABD9F79-72FB-410E-9AD3-2CD55D3DA7DE",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "1D39C5497681ABFBFCE9165E17F98D58CC44A1BD" : "",
+    "85C9036BFE6795F893FE20895B6154B8FF7620AE" : "ios-universal-webview-boilerplate\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Simple Universal Webview App",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Simple Universal Webview App.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/mebyz\/melon-island.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "1D39C5497681ABFBFCE9165E17F98D58CC44A1BD"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/nabilfreeman\/ios-universal-webview-boilerplate.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "85C9036BFE6795F893FE20895B6154B8FF7620AE"
+    }
+  ]
+}

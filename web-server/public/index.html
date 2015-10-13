@@ -1069,7 +1069,9 @@ if (moveForward || moveBackward || moveLeft || moveRight  )
      if (moveLeft) bly = .05
      if (moveRight) bly = -.05
 
- blendMesh.rotation.y += bly+.002
+        //TURN !!
+    bly = .002
+ blendMesh.rotation.y += bly
 
                 blendMesh.translateZ(velocity.z * delta);
                blendMesh.translateX(velocity.x * delta);
