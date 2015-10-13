@@ -315,12 +315,12 @@ $(document).ready(function() {
 			showError(NAME_ERROR);
 			return false;
 		}
-
+/*
 		if ( $("#fu").css('display') != 'none' ){
     		showError(AVATAR_ERROR);
 			return false;
 			}
-
+*/
 		$("#loading").show();
 
 		//query entry of connection
@@ -335,7 +335,7 @@ $(document).ready(function() {
 					username: username,
 					rid: rid
 				}, function(data) {
-
+					
 					if(data.error) {
 						showError(DUPLICATE_ERROR);
 						return;

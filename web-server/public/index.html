@@ -2,9 +2,10 @@
 <html>
     
     <head>
+    <meta content='width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;' name='viewport' />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>
-            MelonIsland
         </title>
         <link rel="stylesheet" href="style.css" type="text/css" />
         <script src="js/lib/jquery-1.8.0.min.js">
@@ -25,12 +26,15 @@
         <script src="dropzone.js"></script>
     
 <script type="text/javascript">
+if(window.innerHeight > window.innerWidth){
+    alert("Please use Landscape!");
+}
 var effect = null;
 var bly=0
     loadedplayers = [];
     loadedplayersTarget = [];
     var rY=0;
-    var precision = 'lowp'
+    var precision = 'highp'
     var running = false;
     var fog;
     var blendMesh;
@@ -67,7 +71,34 @@ var bly=0
 <script type="text/javascript" src="OBJLoader.js"></script>
 
 <script src="sea3d.min.js"></script>
-   
+<style type="text/css">
+    html, body {
+    margin: 0;overflow:hidden;
+    width: 667px !important;    height: 375px !important;
+    }
+    /*-------------------------
+    SIMPLE RESET
+--------------------------*/
+*{
+    margin:0;
+    padding:0;
+}
+/*-------------------------
+    BACKGROUND CSS
+--------------------------*/
+html {
+    background-color: lightblue;
+}
+@media (orientation:landscape) {
+    html > body {
+        position: fixed;
+        top: 0;
+        width:100%;
+        height: 375px !important;
+    }
+}
+
+</style>
 <script id="vertexShader" type="x-shader/x-vertex">
 uniform sampler2D bumpTexture;
 uniform float bumpScale;
@@ -151,21 +182,20 @@ gl_FragColor = vec4(tcolor, tcolor, tcolor, 1.0) *(water + sandy + grass + rocky
 </script>
  </head>
     
-    <body style="overflow: hidden;background:black;font-family: Verdana,Geneva,sans-serif; ">
+    <body style="overflow: hidden;background:black;font-family: Verdana,Geneva,sans-serif;overflow:hidden;margin:0;">
         <script src="texgen.js"></script>
-    <div class="container">
+    <div class="container" >
   <div id="cloud-intro" class="wind">
       
         <div id="app">
             <div id="loginView"  style="display:none;">
                 <div id="loginTitle">
-                    MelonIsland
                 </div>
                 <table>
                     <tr>
                         <td>
                             <input id="loginUser" type="text" placeholder="enter your name" /> 
-                            <input type="button" value="choose avatar" id="fu"/>
+                            <!--<input type="button" value="choose avatar" id="fu"/>-->
                         </td>
                     </tr>
                     <tr>
@@ -176,27 +206,25 @@ gl_FragColor = vec4(tcolor, tcolor, tcolor, 1.0) *(water + sandy + grass + rocky
                         <tr>
                             <td>
                                 <span id="loading" style="display:none;">Connecting to game server ...</span>
-                                <br/>
-                                <input id="login" type='button' class="button" value="Join game !" />
+                                <input id="login" type='button' class="button" value="Join !" />
                             </td>
                         </tr>
                 </table>
                 <div id="loginError">
                 </div>
 
-<canvas id="canvas1" width="256" height="256" style="position:absolute;left:5000px;"></canvas>
-<canvas id="canvas2" width="256" height="256" style="position:absolute;left:5000px;"></canvas>
-<canvas id="canvas3" width="256" height="256" style="position:absolute;left:5000px;"></canvas>
-<canvas id="canvas4" width="256" height="256" style="position:absolute;left:5000px;"></canvas>
-<canvas id="canvas5" width="256" height="256" style="position:absolute;left:5000px;"></canvas>
-
+<canvas id="canvas1" width="256" height="256" style="z-index:-1000;position:absolute;top:0px;left:5px;"></canvas>
+<canvas id="canvas2" width="256" height="256" style="z-index:-1000;position:absolute;top:0px;left:5px;"></canvas>
+<canvas id="canvas3" width="256" height="256" style="z-index:-1000;position:absolute;top:0px;left:5px;"></canvas>
+<canvas id="canvas4" width="256" height="256" style="z-index:-1000;position:absolute;top:0px;left:5px;"></canvas>
+<canvas id="canvas5" width="256" height="256" style="z-index:-1000;position:absolute;top:0px;left:5px;"></canvas>
 
                 <span style="position:absolute;bottom:0px;left:0px;width:100%;"><center>&lt;/&gt; with &#10084; by emmanuel.botros@gmail.com</center></span>
             </div>
             <div id="chatHistory" style="position:absolute;">
 
             </div>
-<div id="3d" style="width:100%;height:100%;display:none;"></div>
+<div id="3d" style="display:none;"></div>
     <div id="pos" style="position:absolute;top:0px;left:0px;color:white;"></div>
     <div id="pos2" style="position:absolute;top:20px;left:0px;color:white;"></div>
 
@@ -355,6 +383,8 @@ gl_FragColor = vec4(tcolor, tcolor, tcolor, 1.0) *(water + sandy + grass + rocky
 
             function start() {
                 $('.dg').hide()
+
+                blendMesh.visible=false
                 blendMesh.scale.x=0.1
                 blendMesh.scale.y=0.1
                 blendMesh.scale.z=0.1
@@ -367,9 +397,9 @@ gl_FragColor = vec4(tcolor, tcolor, tcolor, 1.0) *(water + sandy + grass + rocky
                 blendMesh.rotation.y = Math.PI * -135 / 180;
                 scene.add( blendMesh );
 
-                blendMesh.animations[ 'idle' ].weight = 1;
+                blendMesh.animations[ 'idle' ].weight = 0;
 //                blendMesh.animations[ 'walk' ].weight = 0;
-                blendMesh.animations[ 'run' ].weight = 1;
+                blendMesh.animations[ 'run' ].weight = 0;
 
                 gui = new BlendCharacterGui(blendMesh.animations);
 
@@ -637,12 +667,12 @@ snowyTexture.wrapS = snowyTexture.wrapT = THREE.RepeatWrapping;
         var renderer = new THREE.WebGLRenderer({
             'precision': precision
         });
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setSize(    window.innerWidth, window.innerHeight);
         document.getElementById('3d').appendChild(renderer.domElement);
 
         effect = new THREE.StereoEffect( renderer );
                 effect.eyeSeparation = 10;
-                effect.setSize( window.innerWidth, window.innerHeight );
+                effect.setSize( 667, 375);
         var velocity = new THREE.Vector3();
         var onRenderFcts = [];
         var scene = new THREE.Scene();
@@ -653,7 +683,7 @@ snowyTexture.wrapS = snowyTexture.wrapT = THREE.RepeatWrapping;
         scene.fog = new THREE.Fog(0x000000, 100, 3000);
 
         //var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 1000000);
-        var camera = new THREE.TargetCamera(45, window.innerWidth / window.innerHeight, 0.01, 1000000);
+        var camera = new THREE.TargetCamera(45, 667 / 375, 0.01, 1000000);
         scene.add(camera);
        
         var onKeyDown = function(event) {
@@ -807,7 +837,7 @@ ch.initlayers(256,256);
         var waterNormals = new THREE.Texture(canvas5) 
         waterNormals.needsUpdate = true;
 waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;*/
-        waterNormals = new THREE.ImageUtils.loadTexture('images/waternormals.jpg');
+/*        waterNormals = new THREE.ImageUtils.loadTexture('images/waternormals.jpg');
         waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;
 
         water = new THREE.Water(renderer, camera, scene, {
@@ -821,11 +851,15 @@ waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;*/
             waterColor: 0x001e0f,
             distortionScale: 50.0,
         });
-
+*/
 
         mirrorMesh = new THREE.Mesh(
             new THREE.PlaneBufferGeometry(parameters.width, parameters.height),
-            water.material
+            new THREE.MeshBasicMaterial({
+                    color: 0x0066CC,
+                    wireframe: false
+                })
+            //water.material
         );
 
         mirrorMesh.add(water);
@@ -1235,9 +1269,9 @@ if (0 && cubeMesh.p == cubeMesh.path.length && cubeMesh.back==false) {
        })
 
         onRenderFcts.push(function() {
-            water.material.uniforms.time.value += 1.0 / 60.0;
+            //water.material.uniforms.time.value += 1.0 / 60.0;
 
-            water.render();
+            //water.render();
 
             effect.render(scene, camera);
         })
@@ -1269,7 +1303,6 @@ if (gui != undefined) {
 
 /*
      if (window.DeviceOrientationEvent) {
-        document.getElementById("doEvent").innerHTML = "DeviceOrientation";
         // Listen for the deviceorientation event and handle the raw data
         window.addEventListener('deviceorientation', function(eventData) {
           // gamma is the left-to-right tilt in degrees, where right is positive
@@ -1290,10 +1323,66 @@ if (gui != undefined) {
     
   
     function deviceOrientationHandler(tiltLR, tiltFB, dir) {
-        settings.cameraPosition.z +=tiltLR;
-        settings.cameraPosition.y +=tiltFB;
-    }
-*/
+        if (settings!="undefined") {
+        settings.cameraPosition.y =50+tiltLR;
+        settings.cameraPosition.x =tiltFB;
+        }
+    }*/
+
+    if (!window.DeviceOrientationEvent) {
+            //document.getElementById('do-unsupported').classList.remove('hidden');
+         } else {
+            //document.getElementById('do-info').classList.remove('hidden');
+ 
+            window.addEventListener('deviceorientation', function(event) {
+//               document.getElementById('cube').style.webkitTransform =
+
+        settings.cameraPosition.x =5*event.beta;            
+        settings.cameraPosition.y =80+event.gamma;
+//        settings.cameraPosition.z =event.alpha;
+
+//              alert(   'rotateX(' + event.beta + 'deg) ' +   'rotateY(' + event.gamma + 'deg) ' + 'rotateZ(' + event.alpha + 'deg)');
+ 
+  /*             document.getElementById('beta').innerHTML = Math.round(event.beta);
+               document.getElementById('gamma').innerHTML = Math.round(event.gamma);
+               document.getElementById('alpha').innerHTML = Math.round(event.alpha);
+               document.getElementById('is-absolute').innerHTML = event.absolute ? "true" : "false";*/
+            });
+         }
+ 
+         if (!window.DeviceMotionEvent) {
+  //          document.getElementById('dm-unsupported').classList.remove('hidden');
+         } else {
+//            document.getElementById('dm-info').classList.remove('hidden');
+ 
+            window.addEventListener('devicemotion', function(event) {
+/*               document.getElementById('acceleration-x').innerHTML = Math.round(event.acceleration.x);
+               document.getElementById('acceleration-y').innerHTML = Math.round(event.acceleration.y);
+               document.getElementById('acceleration-z').innerHTML = Math.round(event.acceleration.z);
+ 
+               document.getElementById('acceleration-including-gravity-x').innerHTML =
+                       Math.round(event.accelerationIncludingGravity.x);
+               document.getElementById('acceleration-including-gravity-y').innerHTML =
+                       Math.round(event.accelerationIncludingGravity.y);
+               document.getElementById('acceleration-including-gravity-z').innerHTML =
+                       Math.round(event.accelerationIncludingGravity.z);
+ 
+               document.getElementById('rotation-rate-beta').innerHTML = Math.round(event.rotationRate.beta);
+               document.getElementById('rotation-rate-gamma').innerHTML = Math.round(event.rotationRate.gamma);
+               document.getElementById('rotation-rate-alpha').innerHTML = Math.round(event.rotationRate.alpha);
+ 
+               document.getElementById('interval').innerHTML = event.interval;*/
+            });
+         }
+ 
+         if (!('oncompassneedscalibration' in window)) {
+            //document.getElementById('cnc-unsupported').classList.remove('hidden');
+         } else {
+            window.addEventListener('compassneedscalibration', function(event) {
+               alert('Compass needs calibrating! Wave your device in a figure-eight motion');
+            });
+         }
+
   var onMouseMove = function ( event ) {
 
     var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
@@ -1644,14 +1733,14 @@ var distanceFunction = EuclideanDistance;
   </div>
 </div>
           <script type="text/javascript">
-          var myDropzone = new Dropzone("#fu", { url: "/file-upload"});
-          var mAvatar = '';
-          myDropzone.on("complete", function(file) {
+          //var myDropzone = new Dropzone("#fu", { url: "/file-upload"});
+          var mAvatar = '/images/waternormals.jpg';
+          /*myDropzone.on("complete", function(file) {
 
           mAvatar="/uploads/"+file.name;
    $("#fu").hide().before("<div style='overflow:hidden;'><img id='avatar' style='margin:5px;border:1px dotted black;' width='256' src='/uploads/"+file.name+"'/></div>");
   }
-);
+);*/
 </script>
     </body>
 
