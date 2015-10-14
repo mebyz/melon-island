@@ -4,7 +4,7 @@
   "description": "## License",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "sh heroku.sh",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
