@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "container:git status.xcodeproj">
+      location = "group:OpenEarsDistribution/Framework">
+   </FileRef>
+   <FileRef
+      location = "container:/Users/ebotros/dev/melon-island/ios/SUWA.xcodeproj">
    </FileRef>
 </Workspace>

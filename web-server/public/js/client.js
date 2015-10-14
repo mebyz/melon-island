@@ -321,6 +321,8 @@ $(document).ready(function() {
 			return false;
 			}
 */
+		$("#loginUser").hide()
+		$("#login").hide()
 		$("#loading").show();
 
 		//query entry of connection
