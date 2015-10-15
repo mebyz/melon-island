@@ -74,7 +74,7 @@ var bly=0
 <style type="text/css">
     html, body {
     margin: 0;overflow:hidden;
-    width: 667px !important;    height: 375px !important;
+    width: 668px !important;    height: 375px !important;
     }
     /*-------------------------
     SIMPLE RESET
@@ -183,6 +183,7 @@ gl_FragColor = vec4(tcolor, tcolor, tcolor, 1.0) *(water + sandy + grass + rocky
  </head>
     
     <body style="overflow: hidden;background:black;font-family: Verdana,Geneva,sans-serif;overflow:hidden;margin:0;">
+                <span style="font-size:8px;position:absolute;bottom:0px;left:0px;width:100%;"><center>&lt;/&gt; with &#10084; by mebyz (emmanuel.botros@gmail.com)</center></span>
         <script src="texgen.js"></script>
     <div class="container" >
   <div id="cloud-intro" class="wind">
@@ -219,7 +220,6 @@ gl_FragColor = vec4(tcolor, tcolor, tcolor, 1.0) *(water + sandy + grass + rocky
 <canvas id="canvas4" width="256" height="256" style="z-index:-1000;position:absolute;top:0px;left:5px;"></canvas>
 <canvas id="canvas5" width="256" height="256" style="z-index:-1000;position:absolute;top:0px;left:5px;"></canvas>
 
-                <span style="position:absolute;bottom:0px;left:0px;width:100%;"><center>&lt;/&gt; with &#10084; by emmanuel.botros@gmail.com</center></span>
             </div>
             <div id="chatHistory" style="position:absolute;">
 
@@ -675,7 +675,7 @@ snowyTexture.wrapS = snowyTexture.wrapT = THREE.RepeatWrapping;
 
         effect = new THREE.StereoEffect( renderer );
                 effect.eyeSeparation = 10;
-                effect.setSize( 667, 375);
+                effect.setSize( 668, 375);
         var velocity = new THREE.Vector3();
         var onRenderFcts = [];
         var scene = new THREE.Scene();
@@ -686,7 +686,7 @@ snowyTexture.wrapS = snowyTexture.wrapT = THREE.RepeatWrapping;
         scene.fog = new THREE.Fog(0x000000, 100, 3000);
 
         //var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 1000000);
-        var camera = new THREE.TargetCamera(45, 667 / 375, 0.01, 1000000);
+        var camera = new THREE.TargetCamera(45, 668 / 375, 0.01, 1000000);
         scene.add(camera);
         
         // RUN !
@@ -1346,9 +1346,9 @@ if (gui != undefined) {
             window.addEventListener('deviceorientation', function(event) {
 //               document.getElementById('cube').style.webkitTransform =
 
-        settings.cameraPosition.x =-5*event.beta;            
-        settings.cameraPosition.y =90-event.gamma;
-VRSP=-event.beta/1000;
+        settings.cameraPosition.x =2*event.beta;            
+        settings.cameraPosition.y =90-event.gamma*2;
+VRSP=event.beta/500;
 //        settings.cameraPosition.z =event.alpha;
 
 //              alert(   'rotateX(' + event.beta + 'deg) ' +   'rotateY(' + event.gamma + 'deg) ' + 'rotateZ(' + event.alpha + 'deg)');
@@ -1699,9 +1699,9 @@ var distanceFunction = EuclideanDistance;
 
   document.addEventListener( 'mousemove', onMouseMove, false );
     </script>
-            <div id="toolbar">
+<!--            <div id="toolbar" style="display:none;">
                 <input tabindex="1" type="text" id="entry" />
-            </div>
+            </div>-->
         </div>
         <div id="pop">
             <div id="popHead">
