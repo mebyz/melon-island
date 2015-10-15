@@ -1,17 +1,17 @@
 {
     "development":{
         "connector":[
-             {"id":"connector-server-1", "host":"cho94-9-88-188-77-202.fbx.proxad.net", "port":4050, "clientPort": 3050, "frontend": true},
-             {"id":"connector-server-2", "host":"cho94-9-88-188-77-202.fbx.proxad.net", "port":4051, "clientPort": 3051, "frontend": true},
-             {"id":"connector-server-3", "host":"cho94-9-88-188-77-202.fbx.proxad.net", "port":4052, "clientPort": 3052, "frontend": true}
+             {"id":"connector-server-1", "host":"195.154.67.230", "port":4050, "clientPort": 3050, "frontend": true},
+             {"id":"connector-server-2", "host":"195.154.67.230", "port":4051, "clientPort": 3051, "frontend": true},
+             {"id":"connector-server-3", "host":"195.154.67.230", "port":4052, "clientPort": 3052, "frontend": true}
          ],
         "chat":[
-             {"id":"chat-server-1", "host":"cho94-9-88-188-77-202.fbx.proxad.net", "port":6050},
-             {"id":"chat-server-2", "host":"cho94-9-88-188-77-202.fbx.proxad.net", "port":6051},
-             {"id":"chat-server-3", "host":"cho94-9-88-188-77-202.fbx.proxad.net", "port":6052}
+             {"id":"chat-server-1", "host":"195.154.67.230", "port":6050},
+             {"id":"chat-server-2", "host":"195.154.67.230", "port":6051},
+             {"id":"chat-server-3", "host":"195.154.67.230", "port":6052}
         ],
         "gate":[
-           {"id": "gate-server-1", "host": "cho94-9-88-188-77-202.fbx.proxad.net", "clientPort": 3014, "frontend": true}
+           {"id": "gate-server-1", "host": "195.154.67.230", "clientPort": 3014, "frontend": true}
         ]
     },
     "production":{

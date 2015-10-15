@@ -1,7 +1,7 @@
 {
     "development":{
         "id":"master-server-1",
-        "host":"cho94-9-88-188-77-202.fbx.proxad.net",
+        "host":"195.154.67.230",
         "port":3005
     },
 
