@@ -116,7 +116,7 @@ var kLevelUpdatesPerSecond = 18
         let frameRect: CGRect = CGRect(x: 0, y: 0, width: screenSize.width, height: screenSize.height)
 
         // Create url request from local index.html file located in web_content
-        let urlPath: String = "http://tinyurl.com/fbxeby"
+        let urlPath: String = "https://tinyurl.com/petk8pg"
         let url: NSURL = NSURL(string: urlPath)!
         let requestObj: NSURLRequest = NSURLRequest(URL: url);
         // Test operating system
