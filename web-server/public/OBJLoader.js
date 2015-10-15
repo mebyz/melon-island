@@ -354,7 +354,11 @@ THREE.OBJLoader.prototype = {
 
 			var material = new THREE.MeshLambertMaterial();
 			material.name = object.material.name;
-
+			//H4CK
+			material = new THREE.MeshBasicMaterial({
+                    		color: 0xffffff,
+                    		wireframe: false
+                	});
 			var mesh = new THREE.Mesh( buffergeometry, material );
 			mesh.name = object.name;
 
