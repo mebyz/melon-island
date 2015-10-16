@@ -224,13 +224,14 @@ gl_FragColor = vec4(tcolor, tcolor, tcolor, 1.0) *(water + sandy + grass + rocky
             <div id="chatHistory" style="position:absolute;">
 
             </div>
-<div id="3d" style="display:none;"></div>
+<div id="3d" style="display:none;" onclick="D3d=!D3d"></div>
     <div id="pos" style="position:absolute;top:0px;left:0px;color:white;"></div>
     <div id="pos2" style="position:absolute;top:20px;left:0px;color:white;"></div>
 
                   <div id="blocker"></div>
     <div id="instructions"></div>
              <script>
+var D3d=false;
 var VRSP=0;
 var oka=function(s,score) {alert(s+' score:'+score)};
 
@@ -411,9 +412,9 @@ var oka=function(s,score) {alert(s+' score:'+score)};
 settings = {
                             name: 'camp',
                             targetObject: blendMesh,
-                            cameraPosition: new THREE.Vector3( 0, 30, 30 ),
+                            cameraPosition: new THREE.Vector3( 0, 0, 10 ),
                             fixed: false,
-                            stiffness: .1
+                            stiffness: 1
 //                            matchRotation: !!(i % 3)
                         };
 /*                settings = {
@@ -534,7 +535,7 @@ settings = {
         var nature_models = [];
         var i = 0;
 //        console.log(nature_)
-        var n =nature_;//Array(nature_[0]);//,nature_[15],nature_[25],nature_[35],nature_[45]);//[{"obj":"models/trees/f_pinetree1/obj__pinet1.obj","png":"models/trees/f_pinetree1/pinet1.png"}]
+        var n =Array(nature_[20]);//,nature_[15],nature_[25],nature_[35],nature_[45]);//[{"obj":"models/trees/f_pinetree1/obj__pinet1.obj","png":"models/trees/f_pinetree1/pinet1.png"}]
 
         for (var index in n) {
             var fobj = '../' + n[index].obj;
@@ -676,6 +677,8 @@ snowyTexture.wrapS = snowyTexture.wrapT = THREE.RepeatWrapping;
         effect = new THREE.StereoEffect( renderer );
                 effect.eyeSeparation = 10;
                 effect.setSize( 668, 375);
+
+
         var velocity = new THREE.Vector3();
         var onRenderFcts = [];
         var scene = new THREE.Scene();
@@ -1068,14 +1071,14 @@ if (moveForward || moveBackward || moveLeft || moveRight  )
             //    if (moveRight) velocity.x += 20.0 * delta * 15;
 
 
-     bly = 0
-     if (moveLeft) bly = .05
-     if (moveRight) bly = -.05
-
+//     bly = 0
+//     if (moveLeft) bly = .05
+//     if (moveRight) bly = -.05
         //TURN !!
-    bly = VRSP;
- blendMesh.rotation.y += bly
-
+if (VRSP!=0){
+    bly = VRSP/100;
+ blendMesh.rotation.y = bly
+}
                 blendMesh.translateZ(velocity.z * delta);
                blendMesh.translateX(velocity.x * delta);
                
@@ -1265,7 +1268,7 @@ if (0 && cubeMesh.p == cubeMesh.path.length && cubeMesh.back==false) {
         
                 //CUBE
 
-                if (ld == true) blendMesh.position.y = THREEx.Terrain.planeToHeightMapCoords(MAP[tcx][tcz], MAPMESHES[tcx][tcz], cx, cz) 
+                if (ld == true) blendMesh.position.y = THREEx.Terrain.planeToHeightMapCoords(MAP[tcx][tcz], MAPMESHES[tcx][tcz], cx, cz)
                 if (blendMesh.position.y < -216.4) blendMesh.position.y = -216.4
             }
 
@@ -1281,8 +1284,16 @@ if (0 && cubeMesh.p == cubeMesh.path.length && cubeMesh.back==false) {
             //water.material.uniforms.time.value += 1.0 / 60.0;
 
             //water.render();
+	
+/*	if (D3d==false)
+	effect.setSize(1330,375)
+	else
+	effect.setSize(668,375)
+*/
+//    renderer.render(scene, camera);
 
-            effect.render(scene, camera);
+//	else
+ 	          effect.render(scene, camera);
         })
         var lastTimeMsec = null
         requestAnimationFrame(function animate(nowMsec) {
@@ -1346,9 +1357,9 @@ if (gui != undefined) {
             window.addEventListener('deviceorientation', function(event) {
 //               document.getElementById('cube').style.webkitTransform =
 
-        settings.cameraPosition.x =2*event.beta;            
-        settings.cameraPosition.y =90-event.gamma*2;
-VRSP=event.beta/500;
+//        settings.cameraPosition.x =-2*event.gamma;            
+        settings.cameraPosition.y =30-event.gamma/10//;//90-event.gamma*2;
+VRSP=event.alpha;
 //        settings.cameraPosition.z =event.alpha;
 
 //              alert(   'rotateX(' + event.beta + 'deg) ' +   'rotateY(' + event.gamma + 'deg) ' + 'rotateZ(' + event.alpha + 'deg)');
