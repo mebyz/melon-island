@@ -183,7 +183,14 @@ gl_FragColor = vec4(tcolor, tcolor, tcolor, 1.0) *(water + sandy + grass + rocky
  </head>
     
     <body style="overflow: hidden;background:black;font-family: Verdana,Geneva,sans-serif;overflow:hidden;margin:0;">
-                <span style="font-size:8px;position:absolute;bottom:0px;left:0px;width:100%;"><center>&lt;/&gt; with &#10084; by mebyz (emmanuel.botros@gmail.com)</center></span>
+                <span id="cd1" style="font-size:8px;position:absolute;bottom:0px;left:0px;width:100%;"><center>&lt;/&gt; with &#10084; by mebyz (emmanuel.botros@gmail.com)</center></span>
+
+
+<span id="cdz" style="z-index: 1;font-size:8px;position:absolute;bottom:30px;left:0px;width: 50%;"></span>
+<span id="cdz2" style="z-index: 1;font-size:8px;position:absolute;bottom:15px;left:0px;width: 50%;"></span>
+
+<span id="cd2" style="display:none;z-index: 1;font-size:8px;position:absolute;bottom:0px;left:50%;width: 50%;"><center>&lt;/&gt; with ❤ by mebyz</center></span>
+<span id="cd3" style="display:none;z-index: 1;font-size:8px;position:absolute;bottom:0px;left:0px;width: 50%;"><center>&lt;/&gt; with ❤ by mebyz</center></span>
         <script src="texgen.js"></script>
     <div class="container" >
   <div id="cloud-intro" class="wind">
@@ -1358,8 +1365,31 @@ if (gui != undefined) {
 //               document.getElementById('cube').style.webkitTransform =
 
 //        settings.cameraPosition.x =-2*event.gamma;            
-        settings.cameraPosition.y =30-event.gamma/10//;//90-event.gamma*2;
-VRSP=event.alpha;
+var eg=event.gamma
+
+
+var ea=event.alpha
+if (ea>180 && ea<360) ea =(-360+ea)
+
+if (eg>-90 && eg<0) 
+{
+eg =90+ (90+eg)
+if (ea<0) 
+ea=180+ea
+//ea=ea//360
+else
+ea=ea-180
+}
+var vvp = 30-eg/10;
+//if (vvp<21) vvp=vvp-17
+
+//var ea=event.alpha
+//if (ea>180 && ea<360) ea =(-360+ea)
+
+$("#cdz").text(eg);
+$("#cdz2").text(ea);
+        settings.cameraPosition.y =vvp//30-event.gamma/10//;//90-event.gamma*2;
+VRSP=ea;
 //        settings.cameraPosition.z =event.alpha;
 
 //              alert(   'rotateX(' + event.beta + 'deg) ' +   'rotateY(' + event.gamma + 'deg) ' + 'rotateZ(' + event.alpha + 'deg)');

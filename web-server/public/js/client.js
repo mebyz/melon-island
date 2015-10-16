@@ -174,6 +174,10 @@ function showChat() {
 
 
 	$("#loginView").fadeOut(1000);
+        $("#cd1").fadeOut(100);
+        $("#cd2").fadeIn(1000);        
+	$("#cd3").fadeIn(1000);
+
 	$("#loginError").hide();
 	$("#toolbar").fadeIn(1000);
 	$("entry").focus();
