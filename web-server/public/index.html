@@ -186,11 +186,11 @@ gl_FragColor = vec4(tcolor, tcolor, tcolor, 1.0) *(water + sandy + grass + rocky
                 <span id="cd1" style="font-size:8px;position:absolute;bottom:0px;left:0px;width:100%;"><center>&lt;/&gt; with &#10084; by mebyz (emmanuel.botros@gmail.com)</center></span>
 
 
-<span id="cdz" style="z-index: 1;font-size:8px;position:absolute;bottom:30px;left:0px;width: 50%;"></span>
-<span id="cdz2" style="z-index: 1;font-size:8px;position:absolute;bottom:15px;left:0px;width: 50%;"></span>
+<!--<span id="cdz" style="z-index: 1;font-size:8px;position:absolute;bottom:30px;left:0px;width: 50%;"></span>
+<span id="cdz2" style="z-index: 1;font-size:8px;position:absolute;bottom:15px;left:0px;width: 50%;"></span>-->
 
-<span id="cd2" style="display:none;z-index: 1;font-size:8px;position:absolute;bottom:0px;left:50%;width: 50%;"><center>&lt;/&gt; with ❤ by mebyz</center></span>
-<span id="cd3" style="display:none;z-index: 1;font-size:8px;position:absolute;bottom:0px;left:0px;width: 50%;"><center>&lt;/&gt; with ❤ by mebyz</center></span>
+<span id="cd2" style="display:none;z-index: 1;font-size:8px;position:absolute;bottom:0px;left:50%;width: 50%;"><center>___________________&lt;/&gt; with ❤ by mebyz&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</center></span>
+<span id="cd3" style="display:none;z-index: 1;font-size:8px;position:absolute;bottom:0px;left:0px;width: 50%;"><center>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/&gt; with ❤ by mebyz___________________</center></span>
         <script src="texgen.js"></script>
     <div class="container" >
   <div id="cloud-intro" class="wind">
@@ -684,7 +684,7 @@ snowyTexture.wrapS = snowyTexture.wrapT = THREE.RepeatWrapping;
         document.getElementById('3d').appendChild(renderer.domElement);
 
         effect = new THREE.StereoEffect( renderer );
-                effect.eyeSeparation = 10;
+                effect.eyeSeparation = 0.1;
                 effect.setSize( 668, 375);
 
 
@@ -1388,8 +1388,8 @@ var vvp = 30-eg/10;
 //var ea=event.alpha
 //if (ea>180 && ea<360) ea =(-360+ea)
 
-$("#cdz").text(eg);
-$("#cdz2").text(ea);
+//$("#cdz").text(eg);
+//$("#cdz2").text(ea);
         settings.cameraPosition.y =vvp//30-event.gamma/10//;//90-event.gamma*2;
 VRSP=ea;
 //        settings.cameraPosition.z =event.alpha;
