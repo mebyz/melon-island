@@ -350,7 +350,7 @@ $(document).ready(function() {
 
 					    setTimeout( function() {
 
-  window.addEventListener( 'start-animation', onStartAnimation );
+/*  window.addEventListener( 'start-animation', onStartAnimation );
                 window.addEventListener( 'stop-animation', onStopAnimation );
                 window.addEventListener( 'pause-animation', onPauseAnimation );
                 window.addEventListener( 'step-animation', onStepAnimation );
@@ -363,6 +363,8 @@ $(document).ready(function() {
 
                 blendMesh = new THREE.BlendCharacter();
                 blendMesh.load( "marine_anims.js", start );
+*/
+start();
                 	setName();
 					setRoom();
 					showChat();
@@ -370,6 +372,7 @@ $(document).ready(function() {
 					initUserList(data);
 					$("#chatHistory").show();
 					$("#3d").fadeIn(5000);
+
 		var geometry = new THREE.BoxGeometry( 20, 20, 20 );
 
 
@@ -380,15 +383,15 @@ $(document).ready(function() {
 				var texture = THREE.ImageUtils.loadTexture(mAvatar);
 				
 				var material = new THREE.MeshBasicMaterial( { map: texture } );
-/*
+
 				cubeMesh = new THREE.Mesh( geometry, material );
 
                 cubeMesh.position.x=10000
                 cubeMesh.position.z=10000
                 cubeMesh.position.y=300
 
-				scene.add( cubeMesh );*/
-				loader = new THREE.SEA3D({
+				scene.add( cubeMesh );
+/*				loader = new THREE.SEA3D({
 					autoPlay : true
 				});	
 				
@@ -406,7 +409,7 @@ $(document).ready(function() {
 					cubeMesh.moving=false;
 				}
 				loader.load( '/spide.sea' );
-				
+*/				
 				//summon()
 
 					

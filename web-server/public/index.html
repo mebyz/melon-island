@@ -26,6 +26,7 @@
         <script src="dropzone.js"></script>
     
 <script type="text/javascript">
+var character;
 if(window.innerHeight > window.innerWidth){
     alert("Please use Landscape!");
 }
@@ -58,19 +59,21 @@ var bly=0
 <script src='threex.terrain.js'></script>
 <script src='threex.grass.js'></script>
 <script src="dat.js"></script>
-<script src="Mirror.js"></script>
+<!--<script src="Mirror.js"></script>-->
 <script src="Sky.js"></script>
-<script src="WaterShader.js"></script>
-<script src="Particles.js"></script>
+<!--<script src="WaterShader.js"></script>
+<script src="Particles.js"></script>-->
 <script src="nature-full.js"></script>
 
   <script src="StereoEffect.js"></script>
   <script src="DeviceOrientationControls.js"></script>
-<script src="BlendCharacter.js"></script>
-<script src="BlendCharacterGui.js"></script>
+<!--<script src="BlendCharacter.js"></script>
+<script src="BlendCharacterGui.js"></script>-->
 <script type="text/javascript" src="OBJLoader.js"></script>
+<script src='MD2Loader.js'></script>
+<script src='MD2Character.js'></script>
 
-<script src="sea3d.min.js"></script>
+<!--<script src="sea3d.min.js"></script>-->
 <style type="text/css">
     html, body {
     margin: 0;overflow:hidden;
@@ -189,8 +192,8 @@ gl_FragColor = vec4(tcolor, tcolor, tcolor, 1.0) *(water + sandy + grass + rocky
 <!--<span id="cdz" style="z-index: 1;font-size:8px;position:absolute;bottom:30px;left:0px;width: 50%;"></span>
 <span id="cdz2" style="z-index: 1;font-size:8px;position:absolute;bottom:15px;left:0px;width: 50%;"></span>-->
 
-<span id="cd2" style="display:none;z-index: 1;font-size:8px;position:absolute;bottom:0px;left:50%;width: 50%;"><center>___________________&lt;/&gt; with ❤ by mebyz&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</center></span>
-<span id="cd3" style="display:none;z-index: 1;font-size:8px;position:absolute;bottom:0px;left:0px;width: 50%;"><center>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/&gt; with ❤ by mebyz___________________</center></span>
+<span id="cd2" style="display:none;z-index: 1;font-size:8px;position:absolute;bottom:0px;left:50%;width: 50%;"><center>___________&lt;/&gt; with ❤ by mebyz&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</center></span>
+<span id="cd3" style="display:none;z-index: 1;font-size:8px;position:absolute;bottom:0px;left:0px;width: 50%;"><center>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/&gt; with ❤ by mebyz___________</center></span>
         <script src="texgen.js"></script>
     <div class="container" >
   <div id="cloud-intro" class="wind">
@@ -214,6 +217,9 @@ gl_FragColor = vec4(tcolor, tcolor, tcolor, 1.0) *(water + sandy + grass + rocky
                         <tr>
                             <td>
                                 <span id="loading" style="display:none;">Connecting to game server ...</span>
+    <!--3d:<br>
+    no<input type="radio" name="3d" value="no">
+    yes<input type="radio" name="3d" value="yes" checked="checked"><br>-->
                                 <input id="login" type='button' class="button" value="Join !" />
                             </td>
                         </tr>
@@ -231,7 +237,7 @@ gl_FragColor = vec4(tcolor, tcolor, tcolor, 1.0) *(water + sandy + grass + rocky
             <div id="chatHistory" style="position:absolute;">
 
             </div>
-<div id="3d" style="display:none;" onclick="D3d=!D3d"></div>
+<div id="3d" style="display:none;" ></div>
     <div id="pos" style="position:absolute;top:0px;left:0px;color:white;"></div>
     <div id="pos2" style="position:absolute;top:20px;left:0px;color:white;"></div>
 
@@ -240,7 +246,118 @@ gl_FragColor = vec4(tcolor, tcolor, tcolor, 1.0) *(water + sandy + grass + rocky
              <script>
 var D3d=false;
 var VRSP=0;
+var VRSP2=1;
 var oka=function(s,score) {alert(s+' score:'+score)};
+function animate() {
+
+				requestAnimationFrame( animate );
+				render();
+
+			//	stats.update();
+
+			}
+
+    var runny=false;
+    /*
+    var final_transcript = '';
+var recognizing = false;
+var ignore_onend;
+var start_timestamp;
+
+// Speech Recognition
+if (!('webkitSpeechRecognition' in window)) {
+    message.innerHTML = 'Web Speech API is not supported by this browser. Upgrade to <a href="//www.google.com/chrome">Chrome</a> version 25 or later.';
+} else {
+    var recognition = new webkitSpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = false;
+
+    recognition.onstart = function () {
+        recognizing = true;
+//        message.innerHTML = 'Speak now.';
+        //talk_button.innerHTML = 'Listen';
+    };
+
+    recognition.onresult = function (event) {
+        for (var i = event.resultIndex; i < event.results.length; ++i) {
+            if (event.results[i].isFinal) {
+                final_transcript = event.results[i][0].transcript;
+            } 
+                                                                 
+        }
+          if (final_transcript ==" going")  
+runny=true;
+                                                                 //final_span.innerHTML = final_transcript;
+          if (final_transcript ==" stopping")                                 runny=false;
+//                     final_span.innerHTML = final_transcript;
+                                                                               //                    //final_span.innerHTML += final_transcript+" NO";
+    };
+
+    recognition.onend = function () {
+
+        recognizing = false;
+        if (ignore_onend) {
+            return;
+        }
+        //speechMyText(final_transcript);
+        if (!final_transcript) {
+            //message.innerHTML = 'Click "Talk" and begin speaking.';
+            //talk_button.innerHTML = 'Talk';
+            return;
+        }
+    };
+
+    recognition.onerror = function (event) {
+        if (event.error == 'no-speech') {
+            //message.innerHTML = 'No speech was detected.';
+            ignore_onend = true;
+        }
+        if (event.error == 'audio-capture') {
+            //message.innerHTML = 'No microphone was found. Ensure that a microphone is installed.';
+            ignore_onend = true;
+        }
+        if (event.error == 'not-allowed') {
+            if (event.timeStamp - start_timestamp < 100) {
+                //message.innerHTML = 'Permission to use microphone is blocked. To change, go to chrome://settings/contentExceptions#media-stream';
+            } else {
+                //message.innerHTML = 'Permission to use microphone was denied.';
+            }
+            ignore_onend = true;
+        }
+    };
+
+}
+
+function talkWithApp() {
+    if (recognizing) {
+        recognition.stop();
+        //message.innerHTML = 'Click "Talk" and begin speaking.';
+        talk_button.innerHTML = 'Talk';
+        return;
+    }
+    final_transcript = '';
+    recognition.lang = 'en-GB';
+    recognition.start();
+    ignore_onend = false;
+    //final_span.innerHTML = '';
+    //interim_span.innerHTML = '';
+   // message.innerHTML = 'Click the "Allow" button above to enable your microphone.';
+    start_timestamp = Date();//.getTime();
+}
+
+// Speech Synthesis
+function speechMyText(textToSpeech) {
+    var u = new SpeechSynthesisUtterance();
+    u.text = textToSpeech;
+    u.lang = language.value;
+    u.rate = 1.0;
+    u.onend = function (event) {}
+    speechSynthesis.speak(u);
+}
+talkWithApp()
+ */   
+
+
 
         var HEIGHTMAPSIZE = 16
         var MAXTILES = 40
@@ -296,7 +413,7 @@ var oka=function(s,score) {alert(s+' score:'+score)};
         var okok = true;
 
 
-
+/*
 
             function onStartAnimation( event ) {
 
@@ -391,37 +508,71 @@ var oka=function(s,score) {alert(s+' score:'+score)};
                 blendMesh.showModel( shouldShow );
 
             }
-
+*/
             function start() {
                 $('.dg').hide()
 
-                blendMesh.visible=false
-                blendMesh.scale.x=0.1
-                blendMesh.scale.y=0.1
-                blendMesh.scale.z=0.1
+var config = {
 
+					baseUrl: "",
+
+					body: "ratamahatta.md2",
+					skins: [ "ratamahatta.png"],
+					weapons:  [  [ "weapon.md2", "weapon.png" ] ]
+
+				};
+
+				character = new THREE.MD2Character();
+
+character.loadParts( config );
+/*
+//character.scale = 3;
+
+				character.onLoadComplete = function() {
+
+//					setupSkinsGUI( character );
+//					setupWeaponsGUI( character );
+//					setupGUIAnimations( character );
+
+					character.setAnimation( character.meshBody.geometry.animations[0].name )
+animate();
+				};
+
+//				character.loadParts( config );
+
+//				scene.add( character.root );
+*/
+blendMesh =character.root;
+
+
+//                blendMesh.visible=false
+                blendMesh.scale.x=.6
+                blendMesh.scale.y=.6
+                blendMesh.scale.z=.6
+//blendMesh.scale.set(.1,.1,.1)
                 blendMesh.position.x=10000
                 blendMesh.position.z=10000
 
                 blendMesh.lookAt(new THREE.Vector3(100000,0,100000))
-
-                blendMesh.rotation.y = Math.PI * -135 / 180;
+                blendMesh.rotation.y = Math.PI+ Math.PI * 135 / 180;
                 scene.add( blendMesh );
-
+/*
                 blendMesh.animations[ 'idle' ].weight = 0;
 //                blendMesh.animations[ 'walk' ].weight = 0;
-                blendMesh.animations[ 'run' ].weight = 0;
+                blendMesh.animations[ 'run' ].weight = 1;
 
                 gui = new BlendCharacterGui(blendMesh.animations);
 
-                blendMesh.play("idle", blendMesh.animations[ 'idle' ].weight);
+                blendMesh.play("run", blendMesh.animations[ 'run' ].weight);
+//blendMesh.scale.set(.5,.5,.5)
 
+*/
 settings = {
                             name: 'camp',
                             targetObject: blendMesh,
-                            cameraPosition: new THREE.Vector3( 0, 0, 10 ),
+                            cameraPosition: new THREE.Vector3( 10, 10, -25 ),
                             fixed: false,
-                            stiffness: 1
+                            stiffness: .05
 //                            matchRotation: !!(i % 3)
                         };
 /*                settings = {
@@ -513,7 +664,7 @@ settings = {
 
      var texture = loadImage('clouds001.png');
 
-     particleGroup = new ShaderParticleGroup({
+     /*particleGroup = new ShaderParticleGroup({
         texture: texture,
         maxAge: 100
     });
@@ -536,13 +687,13 @@ settings = {
 
      particleGroup.addEmitter( emitter );
      scene.add( particleGroup.mesh );
-
+*/
         }
         var distance = 400000;
         var nature_models = [];
         var i = 0;
 //        console.log(nature_)
-        var n =nature_//Array(nature_[20]);//,nature_[15],nature_[25],nature_[35],nature_[45]);//[{"obj":"models/trees/f_pinetree1/obj__pinet1.obj","png":"models/trees/f_pinetree1/pinet1.png"}]
+        var n =nature_//Array(nature_[34]);//,nature_[15],nature_[25],nature_[35],nature_[45]);//[{"obj":"models/trees/f_pinetree1/obj__pinet1.obj","png":"models/trees/f_pinetree1/pinet1.png"}]
 
         for (var index in n) {
             var fobj = '../' + n[index].obj;
@@ -684,7 +835,7 @@ snowyTexture.wrapS = snowyTexture.wrapT = THREE.RepeatWrapping;
         document.getElementById('3d').appendChild(renderer.domElement);
 
         effect = new THREE.StereoEffect( renderer );
-                effect.eyeSeparation = 0.1;
+                effect.separation = 1;
                 effect.setSize( 668, 375);
 
 
@@ -715,12 +866,14 @@ snowyTexture.wrapS = snowyTexture.wrapT = THREE.RepeatWrapping;
                 case 38: // up
                 case 87: // w
                 if (blendMesh) {
-                blendMesh.animations[ 'idle' ].weight = 0;
+               // blendMesh.animations[ 'idle' ].weight = 0;
 //                blendMesh.animations[ 'walk' ].weight = 0;
-                blendMesh.animations[ 'run' ].weight = 1;
+               // blendMesh.animations[ 'run' ].weight = 1;
 
 if (running ==false) {
-                blendMesh.play("run", blendMesh.animations[ 'run' ].weight);
+ if (character.meshBody != null)
+character.setAnimation( character.meshBody.geometry.animations[1].name )
+//                blendMesh.play("run", blendMesh.animations[ 'run' ].weight);
 running=true;
             }}
                     moveForward = true;
@@ -734,11 +887,13 @@ running=true;
                 case 40: // down
                 case 83: // s
 if (blendMesh) {
-                blendMesh.animations[ 'idle' ].weight = 0;
+//                blendMesh.animations[ 'idle' ].weight = 0;
 //                blendMesh.animations[ 'walk' ].weight = 0;
-                blendMesh.animations[ 'run' ].weight = 1;
+//                blendMesh.animations[ 'run' ].weight = 1;
 if (running ==false) {
-                blendMesh.play("run", blendMesh.animations[ 'run' ].weight);
+  if (character.meshBody != null)
+character.setAnimation( character.meshBody.geometry.animations[1].name )  
+//            blendMesh.play("run", blendMesh.animations[ 'run' ].weight);
 running=true;
             }
 }
@@ -766,10 +921,12 @@ running=true;
                 case 38: // up
                 case 87: // w
 if (blendMesh) {
-                blendMesh.animations[ 'idle' ].weight = 1;
+//                blendMesh.animations[ 'idle' ].weight = 1;
 //                blendMesh.animations[ 'walk' ].weight = 0;
-                blendMesh.animations[ 'run' ].weight = 0;
-                blendMesh.play("idle", blendMesh.animations[ 'idle' ].weight);
+//                blendMesh.animations[ 'run' ].weight = 0;
+//                blendMesh.play("idle", blendMesh.animations[ 'idle' ].weight);
+if (character.meshBody != null)
+character.setAnimation( character.meshBody.geometry.animations[0].name )
 running=false}
                     moveForward = false;
                     break;
@@ -783,10 +940,11 @@ running=false}
                 case 83: // s
 
 if (blendMesh) {
-                blendMesh.animations[ 'idle' ].weight = 1;
-//                blendMesh.animations[ 'walk' ].weight = 0;
-                blendMesh.animations[ 'run' ].weight = 0;
-                blendMesh.play("idle", blendMesh.animations[ 'idle' ].weight);
+//                blendMesh.animations[ 'idle' ].weight = 1;
+//              blendMesh.animations[ 'walk' ].weight = 0;blendMesh.animations[ 'run' ].weight = 0;
+//                blendMesh.play("idle", blendMesh.animations[ 'idle' ].weight);
+if (character.meshBody != null)
+character.setAnimation( character.meshBody.geometry.animations[0].name )
                 running=false
             } 
 
@@ -872,7 +1030,7 @@ waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;*/
         });
 */
 
-        mirrorMesh = new THREE.Mesh(
+        /*mirrorMesh = new THREE.Mesh(
             new THREE.PlaneBufferGeometry(parameters.width, parameters.height),
             new THREE.MeshBasicMaterial({
                     color: 0x0066CC,
@@ -889,7 +1047,7 @@ waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;*/
         mirrorMesh.scale.multiplyScalar(1)
 
         scene.add(mirrorMesh);
-
+*/
 //        var worker = new Worker('/worker.js');
         
         function addTile(x, y, no) {
@@ -1046,7 +1204,7 @@ waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;*/
         onRenderFcts.push(function(delta, now) {
 
                 camera.update();
-particleGroup.tick(delta)            
+//particleGroup.tick(delta)            
 zt += delta/500
 z=zt
                 var theta = Math.PI * ( z- 0.5);
@@ -1085,16 +1243,30 @@ if (moveForward || moveBackward || moveLeft || moveRight  )
 //     if (moveRight) bly = -.05
         //TURN !!
 if (VRSP!=0){
-    bly = VRSP/100;
- blendMesh.rotation.y = bly
+    bly = VRSP/50;
+     blendMesh.rotation.y = bly
 }
-                blendMesh.translateZ(velocity.z * delta);
-               blendMesh.translateX(velocity.x * delta);
-               
-      
-                
+lrunny=runny
+if (velocity.x !=0 || velocity.z !=0)
+runny=true;
+else runny=false;
 
+ blendMesh.translateZ(-velocity.z * delta*VRSP2);
+               blendMesh.translateX(-velocity.x * delta*VRSP2);
+/*
+if (lrunny != runny)
+if (runny) {
+ if (character.meshBody != null)
+character.setAnimation( character.meshBody.geometry.animations[1].name 		)
+//                blendMesh.translateZ(-velocity.z * delta*VRSP2);
+//               blendMesh.translateX(-velocity.x * delta*VRSP2);
+            }   
+    else{
+ if (character.meshBody != null)
+character.setAnimation( character.meshBody.geometry.animations[0].name   )
+}                
 
+*/
 
             }
             
@@ -1239,7 +1411,7 @@ if (VRSP!=0){
                 
 //                cubeMesh.position.x+=0.1
 */
-if (cubeMesh && cubeMesh.path && cubeMesh.path[cubeMesh.p]) {
+/*if (cubeMesh && cubeMesh.path && cubeMesh.path[cubeMesh.p]) {
 
 cubeMesh.lookAt(new THREE.Vector3(cubeMesh.path[cubeMesh.p][0]/16*1001,cubeMesh.position.y,cubeMesh.path[cubeMesh.p][1]/16*1001))
 cubeMesh.translateZ(0.5)
@@ -1270,19 +1442,19 @@ if (0 && cubeMesh.p == cubeMesh.path.length && cubeMesh.back==false) {
                 cubeMesh.path=t
                 }
             }
-
+*/
 
                 
-                cubeMesh.position.y = THREEx.Terrain.planeToHeightMapCoords(MAP[tcx2][tcz2], MAPMESHES[tcx2][tcz2], cx2, cz2) 
+ //               cubeMesh.position.y = THREEx.Terrain.planeToHeightMapCoords(MAP[tcx2][tcz2], MAPMESHES[tcx2][tcz2], cx2, cz2) 
         
                 //CUBE
 
-                if (ld == true) blendMesh.position.y = THREEx.Terrain.planeToHeightMapCoords(MAP[tcx][tcz], MAPMESHES[tcx][tcz], cx, cz)
+                if (ld == true) blendMesh.position.y = THREEx.Terrain.planeToHeightMapCoords(MAP[tcx][tcz], MAPMESHES[tcx][tcz], cx, cz)+5
                 if (blendMesh.position.y < -216.4) blendMesh.position.y = -216.4
             }
 
-            mirrorMesh.position.x = blendMesh.position.x;
-            mirrorMesh.position.z = blendMesh.position.z;
+            //mirrorMesh.position.x = blendMesh.position.x;
+//            mirrorMesh.position.z = blendMesh.position.z;
 //            $('#pos').html(Math.round(blendMesh.position.x) + ' ' + Math.round(blendMesh.position.y) + ' ' + Math.round(blendMesh.position.z))
 
 
@@ -1293,6 +1465,8 @@ if (0 && cubeMesh.p == cubeMesh.path.length && cubeMesh.back==false) {
             //water.material.uniforms.time.value += 1.0 / 60.0;
 
             //water.render();
+//if (character)
+//character.update( delta );
 	
 /*	if (D3d==false)
 	effect.setSize(1330,375)
@@ -1303,21 +1477,30 @@ if (0 && cubeMesh.p == cubeMesh.path.length && cubeMesh.back==false) {
 
 //	else
  	          effect.render(scene, camera);
+
         })
         var lastTimeMsec = null
         requestAnimationFrame(function animate(nowMsec) {
+if (character){
+
+//if (character.meshBody != null)
+//character.setAnimation( character.meshBody.geometry.animations[0].name )
+
+ character.update(clock.getDelta() );
+}  
             if (okok == true) {
 if (gui != undefined) {
                      var scale = gui.getTimeScale();
                 var delta = clock.getDelta();
-                var stepSize = (!isFrameStepping) ? delta * scale: timeToStep;
+
+var stepSize = (!isFrameStepping) ? delta * scale: timeToStep;
 
                 // modify blend weights
-                if (blendMesh.skeletonHelper)
+/*                if (blendMesh.skeletonHelper)
                 blendMesh.update( stepSize );
                 gui.update();
                 THREE.AnimationHandler.update( stepSize );
-
+*/
 }
 
                 requestAnimationFrame(animate);
@@ -1389,8 +1572,24 @@ var vvp = 30-eg/10;
 //if (ea>180 && ea<360) ea =(-360+ea)
 
 //$("#cdz").text(eg);
+//if (ea<=0)ea+=360
+
+/// ea=event.alpha;
 //$("#cdz2").text(ea);
         settings.cameraPosition.y =vvp//30-event.gamma/10//;//90-event.gamma*2;
+
+VRSP2=0;
+if (eg>=60 && eg <130)
+{
+VRSP2 = (eg-60)*2/100;
+runny=true;
+character.setAnimation( character.meshBody.geometry.animations[1].name)
+}
+else {
+runny=false;
+character.setAnimation( character.meshBody.geometry.animations[0].name)
+}
+
 VRSP=ea;
 //        settings.cameraPosition.z =event.alpha;
 
