@@ -24,15 +24,15 @@
 
 var constants = constants || {};
 
-constants.ACH_PRIME = 'A1';
-constants.ACH_BORED ='A1';
-constants.ACH_HUMBLE = 'A1';
-constants.ACH_COCKY = 'A1';
-constants.ACH_LEET = 'A1';
-constants.ACH_REALLY_BORED = 'A1';
+constants.ACH_PRIME = 'CgkIr7_ey50fEAIQAA';
+constants.ACH_BORED ='CgkIr7_ey50fEAIQAA';
+constants.ACH_HUMBLE = 'CgkIr7_ey50fEAIQAA';
+constants.ACH_COCKY = 'CgkIr7_ey50fEAIQAA';
+constants.ACH_LEET = 'CgkIr7_ey50fEAIQAA';
+constants.ACH_REALLY_BORED = 'CgkIr7_ey50fEAIQAA';
 
-constants.LEADERBOARD_EASY = 'L1';
-constants.LEADERBOARD_HARD = 'L1';
+constants.LEADERBOARD_EASY = 'CgkIr7_ey50fEAIQAw';
+constants.LEADERBOARD_HARD = 'CgkIr7_ey50fEAIQAw';
 
 constants.CLIENT_ID = '1073095352239-7vre9lsrt8s0bmg2ui9sfjpfcadmjre4.apps.googleusercontent.com';
 constants.APP_ID = '1073095352239';

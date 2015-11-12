@@ -9,7 +9,7 @@
     <meta name="google-signin-scope" content="https://www.googleapis.com/auth/games https://www.googleapis.com/auth/plus.login" />
 </head>
 <body>
-  <header><div class="g-signin2" data-onsuccess="onSignIn"></div>
+  <header><!--<div class="g-signin2" data-onsuccess="onSignIn"></div>-->
   <p id="pageHeader">Type-a-Number!</p>
   </header>
   <div role="main">
@@ -141,6 +141,7 @@
 
    // This call is specified by the google-signin-callback in our meta tag
    var signinCallback = function(auth) {
+//      $('.g-signin2').hide();
       login.handleAuthResult(auth)
    }
   </script>
